@@ -86,7 +86,7 @@ var timeout2 = setInterval(f2, 3000);
 ### Jint.Ex Api
 
 #### The AsyncronousEngine class.
-The class AsyncronousEngine allows to run JavaScript script in a background script
+The class AsyncronousEngine allows to run JavaScript script in a background thread
 and supports interaction with UI and the execution of the asynchronous events.
 
 ```csharp

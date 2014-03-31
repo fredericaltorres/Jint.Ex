@@ -29,13 +29,10 @@ only one piece of JavaScript will be executed at the same time.
 ## Features
 
 ### setTimeout and clearTimeOut
-
 The methods setTimeout() and clearTimeOut() are not part of the JavaScript language,
 but part of the DOM. Nevertheless they can be usefull and sometime necessary
 to run some JavaScript libraries written for the browser.
 These methods are also present in NodeJs.
-
-We need them for Jint.
 
 #### Javascript
 
@@ -44,13 +41,11 @@ function f3() {
     print('Hi 3');
 }
 var timeout3 = setTimeout(f3, 3000);
-print(timeout3);
     
 function f1() {
     print('Hi 1');
 }
 var timeout1 = setTimeout(f1, 1000);
-print(timeout1);
 
 clearTimeout(timeout3);
 print('timeout3 cleared');
@@ -80,11 +75,9 @@ function f1() {
     print('Hi 1 '+(new Date()));
 }
 var timeout1 = setInterval(f1, 1000);
-print(timeout1);
 
 function f2() {
     print('Hi 2 '+(new Date()));
 }
 var timeout2 = setInterval(f2, 3000);
-print(timeout2);
 ```

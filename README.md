@@ -20,15 +20,15 @@ Integrating with these UI SDKs (1 and 2 are my primary goals) requires the follo
 Though Jint.Ex will use only 1 .NET background Thread and multiple Timers, 
 only one piece of JavaScript will be executed at the same time.
 
-## Phase
+## Phases
 
 1.  Implement: setTimeout(), clearTimeOut(), setInterval() and clearInterval()
 2.  Implement: Integration with WinForm
 3.  Implement: Integration with iOS
 
-## features
+## Features
 
-### setTimeout clearTimeOut
+### setTimeout and clearTimeOut
 
 The methods setTimeout() and clearTimeOut() are not part of the JavaScript language,
 but part of the DOM. Nevertheless they can be usefull and sometime necessary
@@ -71,8 +71,7 @@ static void SetIntervalDemo()
 }
 ```
 
-
-### setInterval clearInterval
+### setInterval and clearInterval
 
 #### Javascript
 

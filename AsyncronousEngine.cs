@@ -70,6 +70,7 @@ namespace Jint.Ex
             {
                 if (c.Timer != null)
                 {
+                    c.Enabled = false;
                     c.Timer.Enabled = false;
                     c.Timer = null;    
                 }                
@@ -79,15 +80,23 @@ namespace Jint.Ex
 
     public class AsyncronousEngine
     {
-        
-        internal static CallBackInfos       _callBackQueue = new CallBackInfos();
-        private static bool                 _continueRunning = true;
-        private static bool _callBackLoopRuning = false;
+        internal static CallBackInfos       _callBackQueue      = new CallBackInfos();
+        private static bool                 _continueRunning    = true;
+        private static bool                 _callBackLoopRuning = false;
+        private static Jint.Engine          _engine             = null;
 
         /// <summary>
         /// The instance of Jint
         /// </summary>
-        public static Jint.Engine Engine = null;
+        public static Jint.Engine Engine
+        {
+            get
+            {
+                if (_engine == null)
+                    _engine = AllocateNewJintInstance();
+                return _engine;
+            }
+        }
 
         /// <summary>
         /// Reference the assembly that embed the JavaScript scripts.
@@ -101,18 +110,15 @@ namespace Jint.Ex
             Console.WriteLine(s.ToString());
         }
 
-        private static Engine GetJint()
+        private static Engine AllocateNewJintInstance()
         {
-            if (AsyncronousEngine.Engine == null)
-            {
-                Engine = new Engine();
-                Engine.SetValue("print"        , new Action<object>(Print));
-                Engine.SetValue("setTimeout"   ,new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setTimeout__));
-                Engine.SetValue("clearTimeout" , new Action<int>(__clearTimeout__));
-                Engine.SetValue("setInterval"  ,new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setInterval__));
-                Engine.SetValue("clearInterval", new Action<int>(__clearInterval__));
-            }
-            return Engine;
+            var e = new Engine();
+            e.SetValue("print"        , new Action<object>(Print));
+            e.SetValue("setTimeout"   ,new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setTimeout__));
+            e.SetValue("clearTimeout" , new Action<int>(__clearTimeout__));
+            e.SetValue("setInterval"  ,new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setInterval__));
+            e.SetValue("clearInterval", new Action<int>(__clearInterval__));
+            return e;
         }
 
         public static void LoadLibrary(string name, StringBuilder source)
@@ -211,7 +217,7 @@ namespace Jint.Ex
         /// <param name="fileNames"></param>
         public static void LoadScripts(params string[] fileNames)
         {
-            var jint = AsyncronousEngine.GetJint();
+            var jint = AsyncronousEngine.AllocateNewJintInstance();
             var source = new StringBuilder();
 
             foreach (var fileName in fileNames)
@@ -226,9 +232,20 @@ namespace Jint.Ex
 
         private static void __BackgroundThread()
         {
-            var jint = AsyncronousEngine.GetJint();
+            var jint = AsyncronousEngine.AllocateNewJintInstance();
             var source = new StringBuilder();
             __StartResult = AsyncronousEngine.Execute(__StartSource);
+            BackgroundThreadDone();
+        }
+
+        private static void BackgroundThreadDone()
+        {
+            __StartThread = null; // We are done
+        }
+
+        public static bool IsBackgroundThreadRunning
+        {
+            get { return __StartThread != null; }
         }
 
         /// <summary>
@@ -245,6 +262,12 @@ namespace Jint.Ex
             }
         }
 
+        public static void ClearQueue()
+        {
+            _callBackQueue.Stop();
+            CleanCallBackEvents();
+        }
+        
         /// <summary>
         /// Request the event loop to stop;
         /// </summary>
@@ -268,18 +291,26 @@ namespace Jint.Ex
         /// background thread. The method returns right away.
         /// </summary>
         /// <param name="fileNames"></param>
-        public static void Start(params string[] fileNames)
+        public static bool Start(params string[] fileNames)
         {
-            var jint = AsyncronousEngine.GetJint();
-            var source = new StringBuilder();
+            if (IsBackgroundThreadRunning)
+            {
+                return false;
+            }
+            else
+            {
+                var source = new StringBuilder();
 
-            foreach (var fileName in fileNames)
-                AsyncronousEngine.LoadLibrary(fileName, source);
+                foreach (var fileName in fileNames)
+                    AsyncronousEngine.LoadLibrary(fileName, source);
 
-            __StartSource = source.ToString();
-            __StartResult = ExecutionEndType.Undefined;
-            __StartThread = new Thread(new ThreadStart(__BackgroundThread));
-            __StartThread.Start();
+                __StartSource      = source.ToString();
+                __StartResult      = ExecutionEndType.Undefined;
+                __StartThread      = new Thread(new ThreadStart(__BackgroundThread));
+                __StartThread.Name = "Jint.Ex.BackgroundExecutionThread";
+                __StartThread.Start();
+                return true;
+            }
         }
 
         private static void ClearCallBackEvent(int id)

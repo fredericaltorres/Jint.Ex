@@ -1,0 +1,150 @@
+<h1>Jint.Ex</h1>
+
+<h2>Status</h2>
+
+<ul>
+<li>Prototype mode</li>
+</ul>
+
+<h2>Overview</h2>
+
+<p>Jint.Ex is a C# library adding new features to the JavaScript runtime <strong><em><a href="https://github.com/sebastienros/jint">Jint</a></em></strong>.
+The main goal is to be able to integrate Jint with UI SDK like </p>
+
+<ol>
+<li>.NET WinForm in Windows</li>
+<li>UIKit SDK on iOS with the Xamarin stack </li>
+<li>Android too with Xamarin stack</li>
+<li>WinPhone</li>
+</ol>
+
+<p>Integrating with these UI SDKs (1 and 2 are my primary goals) requires the following:</p>
+
+<ul>
+<li>Building non blocking UI
+<ul>
+<li>Script are executed in a background thread with ability to access UI (forms and controls)</li>
+</ul></li>
+<li>Abililty to build true C# asynchronous API interacting with JavaScript code</li>
+<li>Ability to call setTimeout() and setInterval()</li>
+</ul>
+
+<p>Regarding the execution of JavaScript code, only one piece of JavaScript will be 
+executed at the same time (No multithreading execution)</p>
+
+<h2>Phases</h2>
+
+<ol>
+<li>Implement: setTimeout(), clearTimeOut(), setInterval() and clearInterval()</li>
+<li>Implement: Integration with WinForm</li>
+<li>Implement: Integration with iOS</li>
+</ol>
+
+<h2>Features</h2>
+
+<h3>setTimeout and clearTimeOut</h3>
+
+<p>The methods setTimeout() and clearTimeOut() are not part of the JavaScript language,
+but part of the DOM. Nevertheless they can be usefull and sometime necessary
+to run some JavaScript libraries written for the browser.
+These methods are also present in NodeJs.</p>
+
+<h4>Javascript</h4>
+
+<p>```javascript
+function f3() {
+    print('Hi 3');
+}
+var timeout3 = setTimeout(f3, 3000);</p>
+
+<p>function f1() {
+    print('Hi 1');
+}
+var timeout1 = setTimeout(f1, 1000);</p>
+
+<p>clearTimeout(timeout3);
+print('timeout3 cleared');
+```</p>
+
+<h4>CSharp</h4>
+
+<p>```csharp
+static void SetIntervalDemo()
+{
+    Console.WriteLine("Jint setInterval() demo");
+    AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
+    AsyncronousEngine.Start("setIntervalSetTimeout.js");<br />
+    AsyncronousEngine.Run();</p>
+
+<pre><code>Console.WriteLine("*** Done ***");
+Console.ReadKey();
+</code></pre>
+
+<p>}
+```</p>
+
+<h3>setInterval and clearInterval</h3>
+
+<h4>Javascript</h4>
+
+<p>```javascript
+function f1() {
+    print('Hi 1 '+(new Date()));
+}
+var timeout1 = setInterval(f1, 1000);</p>
+
+<p>function f2() {
+    print('Hi 2 '+(new Date()));
+}
+var timeout2 = setInterval(f2, 3000);
+```</p>
+
+<h3>Jint.Ex Api</h3>
+
+<h4>The AsyncronousEngine class.</h4>
+
+<p>The class AsyncronousEngine allows to run JavaScript script in a background thread
+and supports interaction with UI and the execution of the asynchronous events.</p>
+
+<p>```csharp</p>
+
+<p>/// <summary>
+/// The instance of Jint
+/// </summary>
+public static Jint.Engine Engine = null;</p>
+
+<p>/// <summary>
+/// Reference the assembly that embed the JavaScript scripts.
+/// </summary>
+public static Assembly EmbedScriptAssembly = null;</p>
+
+<p>/// <summary>
+/// Load multiple scripts embed or from the file system. This method must be used the load
+/// libraries and must not be used to execute the main script. This method is synchronous.
+/// </summary>
+/// <param name="fileNames"></param>
+public static void LoadScripts(params string[] fileNames);</p>
+
+<p>/// <summary>
+/// Wait until all asynchronous event are processed
+/// </summary>
+public static void Run();</p>
+
+<p>/// <summary>
+/// Request the event loop to stop;
+/// </summary>
+public static void Stop();</p>
+
+<p>/// <summary>
+/// Kill the event loop. Kill the background thread.
+/// </summary>
+public static void Kill();</p>
+
+<p>/// <summary>
+/// Start the execution of multiple scripts as the Main Script, in the Jint.Ex
+/// background thread. The method returns right away.
+/// </summary>
+/// <param name="fileNames"></param>
+public static void Start(params string[] fileNames);</p>
+
+<p>```</p>

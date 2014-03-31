@@ -1,5 +1,9 @@
 ﻿# Jint.Ex
 
+## Status
+
+* Prototype mode
+
 ## Overview
 
 Jint.Ex is a C# library adding new features to the JavaScript runtime ***[Jint](https://github.com/sebastienros/jint)***.
@@ -14,11 +18,11 @@ Integrating with these UI SDKs (1 and 2 are my primary goals) requires the follo
 
 * Building non blocking UI
     * Script are executed in a background thread with ability to access UI (forms and controls)
-* Abililty to build true asynchronous API
+* Abililty to build true C# asynchronous API interacting with JavaScript code
 * Ability to call setTimeout() and setInterval()
 
-Though Jint.Ex will use only 1 .NET background Thread and multiple Timers, 
-only one piece of JavaScript will be executed at the same time.
+Regarding the execution of JavaScript code, only one piece of JavaScript will be 
+executed at the same time (No multithreading execution)
 
 ## Phases
 

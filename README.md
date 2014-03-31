@@ -23,9 +23,7 @@ only one piece of JavaScript will be executed at the same time.
 ## Phase
 
 1.  Implement: setTimeout(), clearTimeOut(), setInterval() and clearInterval()
-
 2.  Implement: Integration with WinForm
-
 3.  Implement: Integration with iOS
 
 ## features
@@ -58,3 +56,17 @@ print('timeout3 cleared');
 
 ### setInterval clearInterval
 
+
+```javascript
+function f1() {
+    print('Hi 1 '+(new Date()));
+}
+var timeout1 = setInterval(f1, 1000);
+print(timeout1);
+
+function f2() {
+    print('Hi 2 '+(new Date()));
+}
+var timeout2 = setInterval(f2, 3000);
+print(timeout2);
+```

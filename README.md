@@ -37,6 +37,8 @@ These methods are also present in NodeJs.
 
 We need them for Jint.
 
+#### Javascript
+
 ```javascript
 function f3() {
     print('Hi 3');
@@ -54,6 +56,7 @@ clearTimeout(timeout3);
 print('timeout3 cleared');
 ```
 
+#### C#
 
 ```csharp
 static void SetIntervalDemo()
@@ -70,6 +73,8 @@ static void SetIntervalDemo()
 
 
 ### setInterval clearInterval
+
+#### Javascript
 
 ```javascript
 function f1() {

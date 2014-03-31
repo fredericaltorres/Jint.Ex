@@ -51,7 +51,7 @@ clearTimeout(timeout3);
 print('timeout3 cleared');
 ```
 
-#### CSharp C#
+#### CSharp
 
 ```csharp
 static void SetIntervalDemo()
@@ -80,4 +80,54 @@ function f2() {
     print('Hi 2 '+(new Date()));
 }
 var timeout2 = setInterval(f2, 3000);
+```
+
+
+### Jint.Ex Api
+
+The AsyncronousEngine class.
+
+```csharp
+
+/// <summary>
+/// The instance of Jint
+/// </summary>
+public static Jint.Engine Engine = null;
+
+/// <summary>
+/// Reference the assembly that embed the JavaScript scripts.
+/// </summary>
+public static Assembly EmbedScriptAssembly = null;
+
+/// <summary>
+/// Load multiple scripts embed or from the file system. This method must be used the load
+/// libraries and must not be used to execute the main script. This method is synchronous.
+/// </summary>
+/// <param name="fileNames"></param>
+public static void LoadScripts(params string[] fileNames);
+
+/// <summary>
+/// Wait until all asynchronous event are processed
+/// </summary>
+public static void Run();
+
+}
+
+/// <summary>
+/// Request the event loop to stop;
+/// </summary>
+public static void Stop();
+
+/// <summary>
+/// Kill the event loop. Kill the background thread.
+/// </summary>
+public static void Kill();
+
+/// <summary>
+/// Start the execution of multiple scripts as the Main Script, in the Jint.Ex
+/// background thread. The method returns right away.
+/// </summary>
+/// <param name="fileNames"></param>
+public static void Start(params string[] fileNames);
+
 ```

@@ -79,11 +79,19 @@ namespace Jint.Ex
 
     public class AsyncronousEngine
     {
-        public static Engine                Engine = null;
+        
         internal static CallBackInfos       _callBackQueue = new CallBackInfos();
         private static bool                 _continueRunning = true;
         private static bool _callBackLoopRuning = false;
 
+        /// <summary>
+        /// The instance of Jint
+        /// </summary>
+        public static Jint.Engine Engine = null;
+
+        /// <summary>
+        /// Reference the assembly that embed the JavaScript scripts.
+        /// </summary>
         public static Assembly EmbedScriptAssembly = null;
 
         private static void Print(object s)
@@ -93,7 +101,7 @@ namespace Jint.Ex
             Console.WriteLine(s.ToString());
         }
 
-        public static Engine GetJint()
+        private static Engine GetJint()
         {
             if (AsyncronousEngine.Engine == null)
             {
@@ -196,6 +204,11 @@ namespace Jint.Ex
             CleanCallBackEvents();
         }
 
+        /// <summary>
+        /// Load multiple scripts embed or from the file system. This method must be used the load
+        /// libraries and must not be used to execute the main script. This method is synchronous.
+        /// </summary>
+        /// <param name="fileNames"></param>
         public static void LoadScripts(params string[] fileNames)
         {
             var jint = AsyncronousEngine.GetJint();
@@ -204,7 +217,7 @@ namespace Jint.Ex
             foreach (var fileName in fileNames)
                 AsyncronousEngine.LoadLibrary(fileName, source);
 
-            AsyncronousEngine.Execute(source.ToString());
+            Engine.Execute(source.ToString());
         }
 
         private static Thread           __StartThread = null;
@@ -218,6 +231,9 @@ namespace Jint.Ex
             __StartResult = AsyncronousEngine.Execute(__StartSource);
         }
 
+        /// <summary>
+        /// Wait until all asynchronous event are processed
+        /// </summary>
         public static void Run()
         {
             if (__StartThread != null)
@@ -229,18 +245,29 @@ namespace Jint.Ex
             }
         }
 
+        /// <summary>
+        /// Request the event loop to stop;
+        /// </summary>
         public static void Stop()
         {
             _callBackQueue.Stop();
             _continueRunning = false;
         }
 
+        /// <summary>
+        /// Kill the event loop. Kill the background thread.
+        /// </summary>
         public static void Kill()
         {
             if (__StartThread != null)
                 __StartThread.Abort();
         }
 
+        /// <summary>
+        /// Start the execution of multiple scripts as the Main Script, in the Jint.Ex
+        /// background thread. The method returns right away.
+        /// </summary>
+        /// <param name="fileNames"></param>
         public static void Start(params string[] fileNames)
         {
             var jint = AsyncronousEngine.GetJint();

@@ -113,8 +113,6 @@ public static void LoadScripts(params string[] fileNames);
 /// </summary>
 public static void Run();
 
-}
-
 /// <summary>
 /// Request the event loop to stop;
 /// </summary>

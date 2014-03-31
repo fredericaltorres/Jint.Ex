@@ -56,7 +56,7 @@ clearTimeout(timeout3);
 print('timeout3 cleared');
 ```
 
-#### C#
+#### CSharp C#
 
 ```csharp
 static void SetIntervalDemo()

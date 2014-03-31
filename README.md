@@ -54,8 +54,22 @@ clearTimeout(timeout3);
 print('timeout3 cleared');
 ```
 
-### setInterval clearInterval
 
+```csharp
+static void SetIntervalDemo()
+{
+    Console.WriteLine("Jint setInterval() demo");
+    AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
+    AsyncronousEngine.Start("setIntervalSetTimeout.js");   
+    AsyncronousEngine.Run();
+
+    Console.WriteLine("*** Done ***");
+    Console.ReadKey();
+}
+```
+
+
+### setInterval clearInterval
 
 ```javascript
 function f1() {

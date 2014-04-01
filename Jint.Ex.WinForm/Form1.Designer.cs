@@ -42,7 +42,7 @@
             this.butRunScript1.Name = "butRunScript1";
             this.butRunScript1.Size = new System.Drawing.Size(348, 23);
             this.butRunScript1.TabIndex = 0;
-            this.butRunScript1.Text = "Run Synchronous Interaction";
+            this.butRunScript1.Text = "Wait Synchronous Interaction";
             this.butRunScript1.UseVisualStyleBackColor = true;
             this.butRunScript1.Click += new System.EventHandler(this.butRunScrip1_Click);
             // 
@@ -60,7 +60,7 @@
             this.butRunScript2.Name = "butRunScript2";
             this.butRunScript2.Size = new System.Drawing.Size(348, 23);
             this.butRunScript2.TabIndex = 2;
-            this.butRunScript2.Text = "Run Asynchronous Interaction";
+            this.butRunScript2.Text = "Wait Asynchronous Interaction";
             this.butRunScript2.UseVisualStyleBackColor = true;
             this.butRunScript2.Click += new System.EventHandler(this.butRunScript2_Click);
             // 
@@ -70,7 +70,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(348, 23);
             this.button1.TabIndex = 3;
-            this.button1.Text = "Run Timer";
+            this.button1.Text = "Wait Timer";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 

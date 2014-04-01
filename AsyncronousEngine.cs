@@ -46,9 +46,9 @@ namespace Jint.Ex
         public CallBackInfo(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> function, double delay, CallBackType type)
         {
             this.Function = function;
-            this.Delay = (int)delay;
-            this.Id = _timeOutIdCounter++;
-            this.Type = type;
+            this.Delay    = (int)delay;
+            this.Id       = _timeOutIdCounter++;
+            this.Type     = type;
         }
 
         public void Clear()
@@ -80,9 +80,34 @@ namespace Jint.Ex
 
     public class AsyncronousEngine
     {
-        internal static CallBackInfos       _callBackQueue      = new CallBackInfos();
-        private static bool                 _continueRunning    = true;
+        /// <summary>
+        /// Queue that contain event to be scheduled or currently scheduled and running
+        /// </summary>
+        internal static CallBackInfos _callBackQueue = new CallBackInfos();
+
+        /// <summary>
+        /// Indicate if we at least run the first main script. During the first main script
+        /// all asynchronous events are registered but not scheduled. After the main script 
+        /// is fully executed than the events are scheduled.
+        /// After that is a first generation of asyncrhonous event call setTimeout() for example
+        /// the event is registered and scheduled at the same time.
+        /// 
+        /// We currently have the following problem:
+        /// 
+        /// MainScript Schedule F1()
+        ///     F1() is executed
+        ///         F1() setTimeOut(F2, 10);
+        ///         Other F1() code
+        ///         F1() take 100 to executed
+        /// 
+        ///     F2 scheduled to execute 10 ms will interrupt F1(), this is not good
+        /// 
+        /// </summary>
         private static bool                 _callBackLoopRuning = false;
+
+        /// <summary>
+        /// The jint engine
+        /// </summary>
         private static Jint.Engine          _engine             = null;
 
         /// <summary>
@@ -110,17 +135,27 @@ namespace Jint.Ex
             Console.WriteLine(s.ToString());
         }
 
+        /// <summary>
+        /// Allocate a Jint instance and registered all the standard methods
+        /// setTimeout, clearTimeout, setInterval, clearInterval, print
+        /// </summary>
+        /// <returns></returns>
         private static Engine AllocateNewJintInstance()
         {
             var e = new Engine();
             e.SetValue("print"        , new Action<object>(Print));
-            e.SetValue("setTimeout"   ,new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setTimeout__));
+            e.SetValue("setTimeout"   , new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setTimeout__));
             e.SetValue("clearTimeout" , new Action<int>(__clearTimeout__));
-            e.SetValue("setInterval"  ,new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setInterval__));
+            e.SetValue("setInterval"  , new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setInterval__));
             e.SetValue("clearInterval", new Action<int>(__clearInterval__));
             return e;
         }
 
+        /// <summary>
+        /// Load a file from the file system or as an embed resource
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="source"></param>
         public static void LoadLibrary(string name, StringBuilder source)
         {
             if (System.IO.File.Exists(name))
@@ -129,8 +164,12 @@ namespace Jint.Ex
                 source.Append(DS.Resources.GetTextResource(name, EmbedScriptAssembly)).AppendLine();
         }
 
-        private static JsValue ExecuteCallBack(
-            Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> callBackFunction)
+        /// <summary>
+        /// Execute a JavaScript callback function
+        /// </summary>
+        /// <param name="callBackFunction"></param>
+        /// <returns></returns>
+        private static JsValue ExecuteCallBack(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> callBackFunction)
         {
             JsValue r = callBackFunction.Invoke( // Call the callback function
                 JsValue.Undefined,               // Pass this as undefined
@@ -139,46 +178,61 @@ namespace Jint.Ex
             return r;
         }
 
+        /// <summary>
+        /// Execute a MainScript
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         private static ExecutionEndType Execute(string source)
         {
             var e = ExecutionEndType.Undefined;
-
-            Engine.Execute(source); // Execute the main script
-
-            ScheduleCallBackEvents(); // Schedule all call back
-
-            _callBackLoopRuning = true;
-            
-            // Wait until there is no more call back, setInterval will loop for ever
-            while (_continueRunning && !NoMoreEvent())
-            {
-                System.Threading.Thread.Sleep(150);
-            }
+            Engine.Execute(source);     
+            ScheduleCallBackEvents();
             return e;
         }
 
+        /// <summary>
+        /// Timer event executing all asynchronous JavaScript callback
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         private static void OnIntervalEvent(object source, ElapsedEventArgs e)
         {
-            var t     = source as System.Timers.Timer;
-            t.Enabled = false;
-            var cbe   = _callBackQueue.FirstOrDefault(c => c.Timer == t);
-            if (cbe != null)
+            if (IsMainThreadRunning)
             {
-                var jsValue = ExecuteCallBack(cbe.Function);
-                if (cbe.Type == CallBackType.TimeOut)
-                    cbe.Clear();
-                else
-                    t.Enabled = true; // re start timer    
+                // If the main thread is running, we do not allow to the run asynchronous event
+                // This can happens the client app execute MainScript1 which calls setInterval(F1, 100ms)
+                // Then client app execute MainScript2 which take 1000ms to execute
+                // During the execution of MainScript2, the timer for the setInterval will trigger
+                // In that case the timer will be ignored
+            }
+            else
+            {
+                var t     = source as System.Timers.Timer;
+                t.Enabled = false;
+                var cbe   = _callBackQueue.FirstOrDefault(c => c.Timer == t);
+                if (cbe != null)
+                {
+                    var jsValue = ExecuteCallBack(cbe.Function);
+                    if (cbe.Type == CallBackType.TimeOut)
+                        cbe.Clear();
+                    else
+                        t.Enabled = true; // re start timer    
+                }
             }
         }
 
+        /// <summary>
+        /// Returns true is there is no enabled event in the Queue
+        /// </summary>
+        /// <returns></returns>
         private static bool NoMoreEvent()
         {
             return _callBackQueue.All(c => c.Timer == null);
         }
 
         /// <summary>
-        /// Remove from the queue the call back that have been executed and are now disabled
+        /// Remove from the queue the callback that have been executed and are now disabled
         /// </summary>
         private static void CleanCallBackEvents()
         {
@@ -208,6 +262,7 @@ namespace Jint.Ex
                 }
             }
             CleanCallBackEvents();
+            _callBackLoopRuning = true;
         }
 
         /// <summary>
@@ -226,89 +281,94 @@ namespace Jint.Ex
             Engine.Execute(source.ToString());
         }
 
-        private static Thread           __StartThread = null;
-        private static string           __StartSource;
-        private static ExecutionEndType __StartResult;
+        private static Thread           __MainThread = null;
+        private static string           __MainSource;
+        private static ExecutionEndType __MainResult;
+        private static int              __MainThreadRunning = 0;
 
+        /// <summary>
+        /// Background thread dedicated to execute the MainScript
+        /// </summary>
         private static void __BackgroundThread()
         {
-            var jint = AsyncronousEngine.AllocateNewJintInstance();
+            // TODO we need a try/catch
             var source = new StringBuilder();
-            __StartResult = AsyncronousEngine.Execute(__StartSource);
-            BackgroundThreadDone();
+            __MainResult = AsyncronousEngine.Execute(__MainSource);
+            __MainThread = null; // We are done
+            Interlocked.Decrement(ref __MainThreadRunning);
         }
-
-        private static void BackgroundThreadDone()
+        
+        /// <summary>
+        /// Return true is a thread safe wayt if the main thread is running
+        /// </summary>
+        public static bool IsMainThreadRunning
         {
-            __StartThread = null; // We are done
-        }
-
-        public static bool IsBackgroundThreadRunning
-        {
-            get { return __StartThread != null; }
+            get { return __MainThreadRunning > 0; }
         }
 
         /// <summary>
-        /// Wait until all asynchronous event are processed
+        /// Wait until the main script/main thread is finished and the callback queue is empty
         /// </summary>
-        public static void Run()
+        public static void Wait()
         {
-            if (__StartThread != null)
+            if (__MainThread != null)
             {
-                while (__StartThread.IsAlive)
+                while (__MainThread != null && __MainThread.IsAlive)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
+                while (_callBackQueue.Count > 0)
                 {
                     System.Threading.Thread.Sleep(100);
                 }
             }
         }
 
+        /// <summary>
+        /// Clear the callback queue
+        /// </summary>
         public static void ClearQueue()
         {
             _callBackQueue.Stop();
             CleanCallBackEvents();
         }
-        
-        /// <summary>
-        /// Request the event loop to stop;
-        /// </summary>
-        public static void Stop()
-        {
-            _callBackQueue.Stop();
-            _continueRunning = false;
-        }
 
         /// <summary>
-        /// Kill the event loop. Kill the background thread.
+        /// Kill the main thread/main script execution
         /// </summary>
         public static void Kill()
         {
-            if (__StartThread != null)
-                __StartThread.Abort();
+            if (__MainThread != null)
+                __MainThread.Abort();
         }
 
         /// <summary>
         /// Start the execution of multiple scripts as the Main Script, in the Jint.Ex
         /// background thread. The method returns right away.
         /// </summary>
-        /// <param name="fileNames"></param>
-        public static bool Start(params string[] fileNames)
+        /// <param name="fileName"></param>
+        /// <param name="block"></param>
+        public static bool Start(string fileName, bool block = false)
         {
-            if (IsBackgroundThreadRunning)
+            if (IsMainThreadRunning)
             {
                 return false;
             }
             else
             {
+                Interlocked.Increment(ref __MainThreadRunning);
+
                 var source = new StringBuilder();
 
-                foreach (var fileName in fileNames)
-                    AsyncronousEngine.LoadLibrary(fileName, source);
+                AsyncronousEngine.LoadLibrary(fileName, source);
 
-                __StartSource      = source.ToString();
-                __StartResult      = ExecutionEndType.Undefined;
-                __StartThread      = new Thread(new ThreadStart(__BackgroundThread));
-                __StartThread.Name = "Jint.Ex.BackgroundExecutionThread";
-                __StartThread.Start();
+                __MainSource      = source.ToString();
+                __MainResult      = ExecutionEndType.Undefined;
+                __MainThread      = new Thread(new ThreadStart(__BackgroundThread));
+                __MainThread.Name = "Jint.Ex.BackgroundExecutionThread";
+                __MainThread.Start();
+                if(block)
+                    AsyncronousEngine.Wait();
                 return true;
             }
         }

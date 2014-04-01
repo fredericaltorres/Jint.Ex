@@ -74,7 +74,7 @@ static void SetIntervalDemo()
     Console.WriteLine("Jint setInterval() demo");
     AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
     AsyncronousEngine.Start("setIntervalSetTimeout.js");<br />
-    AsyncronousEngine.Run();</p>
+    AsyncronousEngine.Wait();</p>
 
 <pre><code>Console.WriteLine("*** Done ***");
 Console.ReadKey();
@@ -128,7 +128,7 @@ public static void LoadScripts(params string[] fileNames);</p>
 <p>/// <summary>
 /// Wait until all asynchronous event are processed
 /// </summary>
-public static void Run();</p>
+public static void Wait();</p>
 
 <p>/// <summary>
 /// Request the event loop to stop;

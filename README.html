@@ -73,7 +73,7 @@ static void SetIntervalDemo()
 {
     Console.WriteLine("Jint setInterval() demo");
     AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-    AsyncronousEngine.Start("setIntervalSetTimeout.js");<br />
+    AsyncronousEngine.RequestExecution("setIntervalSetTimeout.js");<br />
     AsyncronousEngine.Wait();</p>
 
 <pre><code>Console.WriteLine("*** Done ***");
@@ -136,15 +136,15 @@ public static void Wait();</p>
 public static void Stop();</p>
 
 <p>/// <summary>
-/// Kill the event loop. Kill the background thread.
+/// Stop the event loop. Stop the background thread.
 /// </summary>
-public static void Kill();</p>
+public static void Stop();</p>
 
 <p>/// <summary>
-/// Start the execution of multiple scripts as the Main Script, in the Jint.Ex
+/// RequestExecution the execution of multiple scripts as the Main Script, in the Jint.Ex
 /// background thread. The method returns right away.
 /// </summary>
 /// <param name="fileNames"></param>
-public static void Start(params string[] fileNames);</p>
+public static void RequestExecution(params string[] fileNames);</p>
 
 <p>```</p>

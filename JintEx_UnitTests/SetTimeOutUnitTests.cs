@@ -18,7 +18,7 @@ namespace JintEx_UnitTests
         public void setIntervalSetTimeoutNested()
         {
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-            AsyncronousEngine.Start("setIntervalSetTimeoutNested.js", true);
+            AsyncronousEngine.RequestExecution("setIntervalSetTimeoutNested.js", true);
             Assert.AreEqual(8.0, GetJSVariable("counter"));
         }
         
@@ -26,7 +26,7 @@ namespace JintEx_UnitTests
         public void setTimeoutNestedNested()
         {
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-            AsyncronousEngine.Start("SetTimeoutNestedNested.js", true);
+            AsyncronousEngine.RequestExecution("SetTimeoutNestedNested.js", true);
             Assert.AreEqual(3.0, GetJSVariable("counter"));
         }
 
@@ -34,15 +34,23 @@ namespace JintEx_UnitTests
         public void setTimeoutNested()
         {
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-            AsyncronousEngine.Start("SetTimeoutNested.js", true);
+            AsyncronousEngine.RequestExecution("SetTimeoutNested.js", true);
             Assert.AreEqual(2.0, GetJSVariable("counter"));
         }
 
         [TestMethod]
-        public void setTimeout()
+        public void setTimeout_1()
         {
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-            AsyncronousEngine.Start("setTimeout.js", true);
+            AsyncronousEngine.RequestExecution("setTimeout.1.js", true);
+            Assert.AreEqual(2.0, GetJSVariable("counter"));
+        }
+
+        [TestMethod]
+        public void setTimeout_3()
+        {
+            AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
+            AsyncronousEngine.RequestExecution("setTimeout.3.js", true);
             Assert.AreEqual(2.0, GetJSVariable("counter"));
         }
          
@@ -50,7 +58,7 @@ namespace JintEx_UnitTests
         public void clearTimeout()
         {
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-            AsyncronousEngine.Start("clearTimeout.js", true);
+            AsyncronousEngine.RequestExecution("clearTimeout.js", true);
             Assert.AreEqual(0.0, GetJSVariable("counter"));
         }
 
@@ -58,7 +66,7 @@ namespace JintEx_UnitTests
         public void setInterval()
         {
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-            AsyncronousEngine.Start("setInterval.js", true);
+            AsyncronousEngine.RequestExecution("setInterval.js", true);
             var v = Jint.Ex.HelperClass.ConvertJsValueToNetValue(AsyncronousEngine.Engine.Execute("counter").GetCompletionValue());
             Assert.AreEqual(8.0, GetJSVariable("counter"));
         }
@@ -67,7 +75,7 @@ namespace JintEx_UnitTests
         public void clearInterval()
         {
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-            AsyncronousEngine.Start("clearInterval.js", true);
+            AsyncronousEngine.RequestExecution("clearInterval.js", true);
             Assert.AreEqual(0.0, GetJSVariable("counter"));
         }
     }

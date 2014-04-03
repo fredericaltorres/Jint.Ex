@@ -75,8 +75,9 @@ namespace Jint.Ex.WinForm
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //AsyncronousEngine.Kill();
             AsyncronousEngine.Stop();
-            //this.Close();
+            this.Close();
         }
     }
 }

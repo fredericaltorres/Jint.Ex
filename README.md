@@ -18,7 +18,8 @@ Integrating with these UI SDKs (1 and 2 are my primary goals) requires the follo
 * Ability to call setTimeout() and setInterval()
 
 Regarding the execution of JavaScript code, only one piece of JavaScript will be 
-executed at the same time (No multithreading execution)
+executed at the same time. Jint.Ex implement the concept of Event Loop, to execute script and
+callback function.
 
 ## Phases
 

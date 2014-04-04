@@ -17,9 +17,8 @@ Integrating with these UI SDKs (1 and 2 are my primary goals) requires the follo
 * Abililty to build true C# asynchronous API interacting with JavaScript code
 * Ability to call setTimeout() and setInterval()
 
-Regarding the execution of JavaScript code, only one piece of JavaScript will be 
-executed at the same time. Jint.Ex implement the concept of Event Loop, to execute script and
-callback function.
+Jint.Ex implement the concept of Event Loop, to execute scripts and callback functions.
+Only JavaScript script or callback is executed at a specific moment.
 
 ## Features
 

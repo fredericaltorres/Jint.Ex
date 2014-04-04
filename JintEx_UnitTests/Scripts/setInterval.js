@@ -3,7 +3,6 @@
 function f1() {
     counter++;
     f1.counter++;
-    print('Hi 1 - '+f1.counter);
     if (f1.counter == 4)
         clearInterval(f1.timeout);
 }

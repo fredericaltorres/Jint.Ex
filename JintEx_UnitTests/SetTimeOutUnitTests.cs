@@ -14,7 +14,7 @@ namespace JintEx_UnitTests
             return v;
         }
         
-        //[TestMethod]
+        [TestMethod]
         public void setIntervalSetTimeoutNested()
         {
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();

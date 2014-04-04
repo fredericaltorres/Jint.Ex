@@ -113,25 +113,46 @@ public static Assembly EmbedScriptAssembly = null;
 public static void LoadScripts(params string[] fileNames);
 
 /// <summary>
-/// Wait until all asynchronous event are processed
+/// Start the event loop
 /// </summary>
-public static void Run();
+/// <returns></returns>
+public static bool Start();
 
 /// <summary>
-/// Request the event loop to stop;
+/// RequestExecution the execution of one javaScript script by the event loop. 
+/// The method returns right away. 
+/// Start the AsyncronousEngine if needed.
 /// </summary>
-public static void Stop();
+/// <param name="fileName">The filename or resource name to load and execute</param>
+/// <param name="block">If true after the execution, block until the event queue is empty</param>
+public static bool RequestExecution(string fileName, bool block = false);
 
 /// <summary>
-/// Kill the event loop. Kill the background thread.
+/// Kill the event loop
 /// </summary>
 public static void Kill();
 
 /// <summary>
-/// Start the execution of multiple scripts as the Main Script, in the Jint.Ex
-/// background thread. The method returns right away.
+/// Stop the event loop
 /// </summary>
-/// <param name="fileNames"></param>
-public static void Start(params string[] fileNames);
+public static void Stop();
+
+/// <summary>
+/// Wait until the event queue is empty
+/// </summary>
+public static void Wait();
+
+/// <summary>
+/// Clear the event queue
+/// </summary>
+public static void ClearQueue();
+
+/// <summary>
+/// Request the execution of a JavaScript callback function. This method should be called by 
+/// C# custom object that want to implement asynchronous api.
+/// </summary>
+/// <param name="callBackFunction"></param>
+/// <param name="parameters"></param>
+public static void RequestCallbackExecution(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> callBackFunction, List<JsValue>  parameters);
 
 ```

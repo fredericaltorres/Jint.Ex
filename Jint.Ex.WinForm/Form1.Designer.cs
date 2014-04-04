@@ -42,7 +42,7 @@
             // 
             // butRunScript1
             // 
-            this.butRunScript1.Location = new System.Drawing.Point(12, 240);
+            this.butRunScript1.Location = new System.Drawing.Point(12, 579);
             this.butRunScript1.Name = "butRunScript1";
             this.butRunScript1.Size = new System.Drawing.Size(348, 23);
             this.butRunScript1.TabIndex = 0;
@@ -53,14 +53,14 @@
             // lbOut
             // 
             this.lbOut.FormattingEnabled = true;
-            this.lbOut.Location = new System.Drawing.Point(12, 22);
+            this.lbOut.Location = new System.Drawing.Point(9, 30);
             this.lbOut.Name = "lbOut";
-            this.lbOut.Size = new System.Drawing.Size(348, 212);
+            this.lbOut.Size = new System.Drawing.Size(348, 537);
             this.lbOut.TabIndex = 1;
             // 
             // butRunScript2
             // 
-            this.butRunScript2.Location = new System.Drawing.Point(12, 269);
+            this.butRunScript2.Location = new System.Drawing.Point(12, 608);
             this.butRunScript2.Name = "butRunScript2";
             this.butRunScript2.Size = new System.Drawing.Size(348, 23);
             this.butRunScript2.TabIndex = 2;
@@ -70,7 +70,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 298);
+            this.button1.Location = new System.Drawing.Point(12, 637);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(348, 23);
             this.button1.TabIndex = 3;
@@ -80,7 +80,7 @@
             // 
             // butClear
             // 
-            this.butClear.Location = new System.Drawing.Point(9, 343);
+            this.butClear.Location = new System.Drawing.Point(9, 682);
             this.butClear.Name = "butClear";
             this.butClear.Size = new System.Drawing.Size(348, 23);
             this.butClear.TabIndex = 4;
@@ -90,7 +90,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(9, 372);
+            this.button2.Location = new System.Drawing.Point(9, 711);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(348, 23);
             this.button2.TabIndex = 5;
@@ -104,7 +104,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(381, 27);
+            this.menuStrip1.Size = new System.Drawing.Size(369, 27);
             this.menuStrip1.TabIndex = 6;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -128,7 +128,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(381, 425);
+            this.ClientSize = new System.Drawing.Size(369, 746);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.butClear);
             this.Controls.Add(this.button1);
@@ -139,6 +139,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

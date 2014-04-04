@@ -20,6 +20,7 @@ namespace Jint.Ex
         Interval,
         ScriptExecution,
         UserCallback,
+        ClearQueue
     }
 
     internal enum ExecutionEndType
@@ -47,7 +48,7 @@ namespace Jint.Ex
             get { return !this.Enabled; }
         }
 
-        public CallBackEvent()
+        private CallBackEvent()
         {
             this.Id = _timeOutIdCounter++;
         }
@@ -63,6 +64,11 @@ namespace Jint.Ex
         {
             this.Source = source;
             this.Type = CallBackType.ScriptExecution;
+        }
+
+        public CallBackEvent(CallBackType callBackType) : this()
+        {
+            this.Type = callBackType;
         }
 
         public CallBackEvent(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> function, double delay, CallBackType type) : this()
@@ -88,11 +94,10 @@ namespace Jint.Ex
         }
         public void Clear()
         {
-            lock (obj)
-            {
-                this._queue.Clear();
-            }
-        }
+            // No need to lock because this method is only called by
+            // the event loop
+            this._queue.Clear();            
+        }        
         public void RequestScriptExecution(string source)
         {
             lock (obj)
@@ -142,16 +147,17 @@ namespace Jint.Ex
                     c.Disable();
             }
         }
-        public void RemoveTopBecauseProcessed()
+        public void RemoveTopBecauseProcessed(CallBackEvent c)
         {
             lock (obj)
             {
-                var c = this.Dequeue();
-                // for Interval we re add the event at then end of the queue
-                if (c.Type == CallBackType.Interval)
+                var cc = this._queue.Find(e => e == c);
+                if (cc != null)
+                    this._queue.Remove(cc);
+                if (c.Type == CallBackType.Interval) // for Interval we re add the event at then end of the queue
                     this.Enqueue(c);
             }
-        }                            
+        }
     }
 
     public class AsyncronousEngine
@@ -271,7 +277,7 @@ namespace Jint.Ex
         {
             while (_runBackgroundThread)
             {
-                Debug.WriteLine(string.Format("_runBackgroundThread:{0}", Environment.TickCount));
+                Debug.WriteLine(string.Format("_runBackgroundThread:{0} Queue:{1}", Environment.TickCount, _eventQueue.Count));
                 if (_eventQueue.Count > 0)
                 {
                     var c = _eventQueue.Peek();
@@ -279,23 +285,13 @@ namespace Jint.Ex
                     {
                         switch (c.Type)
                         {
-                            case CallBackType.ScriptExecution:
-                                Execute(c.Source);
-                                _eventQueue.RemoveTopBecauseProcessed();
-                                break;
-                            case CallBackType.UserCallback:
-                                ExecuteCallBack(c.Function, c.Parameters);
-                                _eventQueue.RemoveTopBecauseProcessed();
-                                break;
-                            case CallBackType.TimeOut:
-                            case CallBackType.Interval:
-                                Thread.Sleep(c.Delay);
-                                // I do not know why I have to do that
-                                //if (_runBackgroundThread)
-                                ExecuteCallBack(c.Function);
-                                _eventQueue.RemoveTopBecauseProcessed();
-                                break;
+                            case CallBackType.ClearQueue     : _eventQueue.Clear(); break;
+                            case CallBackType.ScriptExecution: Execute(c.Source); break;
+                            case CallBackType.UserCallback   : ExecuteCallBack(c.Function, c.Parameters); break;
+                            case CallBackType.TimeOut        :
+                            case CallBackType.Interval       : Thread.Sleep(c.Delay); ExecuteCallBack(c.Function); break;
                         }
+                        _eventQueue.RemoveTopBecauseProcessed(c);
                     }
                     else
                     {
@@ -320,7 +316,7 @@ namespace Jint.Ex
         /// </summary>
         public static void ClearQueue()
         {
-            _eventQueue.Clear();
+            _eventQueue.Enqueue(new CallBackEvent(CallBackType.ClearQueue));
         }
 
         /// <summary>
@@ -337,14 +333,17 @@ namespace Jint.Ex
         /// <summary>
         /// Stop the event loop
         /// </summary>
-        public static void Stop()
+        public static void Stop(Action sleepMethod = null)
         {
             if (_mainThread != null)
             {
                 _runBackgroundThread = false;
                 while (_mainThread.IsAlive)
                 {
-                    Thread.Sleep(100); 
+                    if (sleepMethod == null)
+                        Thread.Sleep(100);
+                    else 
+                        sleepMethod();
                 }
                 //_mainThread.Join();
                 _mainThread = null;
@@ -401,10 +400,8 @@ namespace Jint.Ex
             }
             else
             {
-                ClearQueue();
                 Interlocked.Increment(ref _mainThreadRunningSemaphore);
-                _mainThread          = new Thread(new ThreadStart(__BackgroundThread));
-                _mainThread.Name     = "Jint.Ex.BackgroundExecutionThread";
+                _mainThread          = new Thread(new ThreadStart(__BackgroundThread)) { Name = "Jint.Ex.BackgroundExecutionThread" };
                 _runBackgroundThread = true;
                 _mainThread.Start();                
                 return true;

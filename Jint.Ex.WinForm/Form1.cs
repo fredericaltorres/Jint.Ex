@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -75,9 +76,16 @@ namespace Jint.Ex.WinForm
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //AsyncronousEngine.Kill();
-            AsyncronousEngine.Stop();
             this.Close();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            AsyncronousEngine.Stop(() =>
+            {
+                Thread.Sleep(100);
+                Application.DoEvents();
+            });
         }
     }
 }

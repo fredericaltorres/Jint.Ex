@@ -81,20 +81,18 @@ var timeout2 = setInterval(f2, 3000);
 ### Implementing Custom Asynchronous Api
 
 Jint allows to expose C# methods, class and singleton object to the JavaScript world. With Jint.Ex
-you can implement true asynchronous method. Like the method read() of the singleton object storage.
+you can implement true asynchronous method, like the method read() of the singleton object storage in sample below.
 
 ```javascript
 var s = null;
-
 storage.read(function(data) {
-
     s = data;
 });
 ```
 
-The method read() start a background thread and return right away. The thread will execute the read
-operation and then request the execution of the call back function using the Jint.Ex Event Loop.
-When the Jint.Ex Event Loop will reach the event it will execute the call back function.
+The method read() starts a background thread and returns right away. The thread will execute the read
+operation and then request the execution of the call back function using the Jint.Ex event loop.
+when the Jint.Ex event loop will reach the event it will execute the call back function.
 
 For more information see blog: xxxxxxxxxxxxxxxxx.
 
@@ -106,64 +104,67 @@ and supports interaction with UI and the execution of the asynchronous events.
 
 ```csharp
 
-/// <summary>
-/// The instance of Jint
-/// </summary>
-public static Jint.Engine Engine = null;
+public AsyncronousEngine {
 
-/// <summary>
-/// Reference the assembly that embed the JavaScript scripts.
-/// </summary>
-public static Assembly EmbedScriptAssembly = null;
+    /// <summary>
+    /// The instance of Jint
+    /// </summary>
+    public static Jint.Engine Engine = null;
 
-/// <summary>
-/// Load multiple scripts embed or from the file system. This method must be used the load
-/// libraries and must not be used to execute the main script. This method is synchronous.
-/// </summary>
-/// <param name="fileNames"></param>
-public static void LoadScripts(params string[] fileNames);
+    /// <summary>
+    /// Reference the assembly that embed the JavaScript scripts.
+    /// </summary>
+    public static Assembly EmbedScriptAssembly = null;
 
-/// <summary>
-/// Start the event loop
-/// </summary>
-/// <returns></returns>
-public static bool Start();
+    /// <summary>
+    /// Load multiple scripts embed or from the file system. This method must be used the load
+    /// libraries and must not be used to execute the main script. This method is synchronous.
+    /// </summary>
+    /// <param name="fileNames"></param>
+    public static void LoadScripts(params string[] fileNames);
 
-/// <summary>
-/// RequestExecution the execution of one javaScript script by the event loop. 
-/// The method returns right away. 
-/// Start the AsyncronousEngine if needed.
-/// </summary>
-/// <param name="fileName">The filename or resource name to load and execute</param>
-/// <param name="block">If true after the execution, block until the event queue is empty</param>
-public static bool RequestExecution(string fileName, bool block = false);
+    /// <summary>
+    /// Start the event loop
+    /// </summary>
+    /// <returns></returns>
+    public static bool Start();
 
-/// <summary>
-/// Kill the event loop
-/// </summary>
-public static void Kill();
+    /// <summary>
+    /// RequestExecution the execution of one javaScript script by the event loop. 
+    /// The method returns right away. 
+    /// Start the AsyncronousEngine if needed.
+    /// </summary>
+    /// <param name="fileName">The filename or resource name to load and execute</param>
+    /// <param name="block">If true after the execution, block until the event queue is empty</param>
+    public static bool RequestExecution(string fileName, bool block = false);
 
-/// <summary>
-/// Stop the event loop
-/// </summary>
-public static void Stop();
+    /// <summary>
+    /// Kill the event loop
+    /// </summary>
+    public static void Kill();
 
-/// <summary>
-/// Wait until the event queue is empty
-/// </summary>
-public static void Wait();
+    /// <summary>
+    /// Stop the event loop
+    /// </summary>
+    public static void Stop();
 
-/// <summary>
-/// Clear the event queue
-/// </summary>
-public static void ClearQueue();
+    /// <summary>
+    /// Wait until the event queue is empty
+    /// </summary>
+    public static void Wait();
 
-/// <summary>
-/// Request the execution of a JavaScript callback function. This method should be called by 
-/// C# custom object that want to implement asynchronous api.
-/// </summary>
-/// <param name="callBackFunction"></param>
-/// <param name="parameters"></param>
-public static void RequestCallbackExecution(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> callBackFunction, List<JsValue>  parameters);
+    /// <summary>
+    /// Clear the event queue
+    /// </summary>
+    public static void ClearQueue();
 
+    /// <summary>
+    /// Request the execution of a JavaScript callback function. This method should be called by 
+    /// C# custom object that want to implement asynchronous api.
+    /// </summary>
+    /// <param name="callBackFunction"></param>
+    /// <param name="parameters"></param>
+    public static void RequestCallbackExecution(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> callBackFunction, List<JsValue>  parameters);
+
+}
 ```

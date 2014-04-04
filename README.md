@@ -51,10 +51,11 @@ print('timeout3 cleared');
 static void SetIntervalDemo()
 {
     Console.WriteLine("Jint setInterval() demo");
+    
     AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
     AsyncronousEngine.RequestExecution("setIntervalSetTimeout.js");   
-    AsyncronousEngine.Wait();
-    AsyncronousEngine.Stop();
+    AsyncronousEngine.Wait(); // Wait util all events are processed
+    AsyncronousEngine.Stop(); // Stop the event loop
 
     Console.WriteLine("*** Done ***");
     Console.ReadKey();

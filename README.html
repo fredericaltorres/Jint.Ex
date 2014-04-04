@@ -57,13 +57,14 @@ print('timeout3 cleared');
 <p>```csharp
 static void SetIntervalDemo()
 {
-    Console.WriteLine("Jint setInterval() demo");
-    AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-    AsyncronousEngine.RequestExecution("setIntervalSetTimeout.js");<br />
-    AsyncronousEngine.Wait();
-    AsyncronousEngine.Stop();</p>
+    Console.WriteLine("Jint setInterval() demo");</p>
 
-<pre><code>Console.WriteLine("*** Done ***");
+<pre><code>AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
+AsyncronousEngine.RequestExecution("setIntervalSetTimeout.js");   
+AsyncronousEngine.Wait(); // Wait util all events are processed
+AsyncronousEngine.Stop(); // Stop the event loop
+
+Console.WriteLine("*** Done ***");
 Console.ReadKey();
 </code></pre>
 

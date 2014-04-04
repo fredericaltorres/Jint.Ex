@@ -79,7 +79,7 @@ var timeout2 = setInterval(f2, 3000);
 
 ### Implementing Custom Asynchronous Api
 
-Jint allow to expose C# methods, class and singleton to the JavaScript world. With Jint.Ex
+Jint allows to expose C# methods, class and singleton object to the JavaScript world. With Jint.Ex
 you can implement true asynchronous method. Like the method read() of the singleton object storage.
 
 ```javascript
@@ -90,6 +90,10 @@ storage.read(function(data) {
     s = data;
 });
 ```
+
+The method read() start a background thread and return right away. The thread will execute the read
+operation and then request the execution of the call back function using the Jint.Ex Event Loop.
+When the Jint.Ex Event Loop will reach the event it will execute the call back function.
 
 For more information see blog: xxxxxxxxxxxxxxxxx.
 

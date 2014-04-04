@@ -20,7 +20,7 @@ namespace JintEx_UnitTests
         /// Execute the loading of the string in a background thread and then push a request to
         /// execute the callback function
         /// </summary>
-        private void __BackgroundThread()
+        private void __BackgroundThread(object p)
         {
             var s = read();
             AsyncronousEngine.RequestCallbackExecution(_callBackFunction, new List<JsValue>() { s });
@@ -46,12 +46,10 @@ namespace JintEx_UnitTests
         public string read(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> callBackFunction)
         {
             _callBackFunction = callBackFunction;
-            var t = new Thread(new ThreadStart(__BackgroundThread));
-            t.Start();
+            ThreadPool.QueueUserWorkItem(new WaitCallback(__BackgroundThread), null);
             return null;
         }
     }
-
 
     [TestClass]
     public class AsyncApiUnitTests
@@ -66,7 +64,7 @@ namespace JintEx_UnitTests
             AsyncronousEngine.Reset();
             AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
             AsyncronousEngine.Engine.SetValue("storage", new Storage());
-            AsyncronousEngine.RequestExecution(script, true);
+            AsyncronousEngine.RequestScriptFileExecution(script, true);
         }
         [TestMethod]
         public void Storage_Sync()

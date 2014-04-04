@@ -49,17 +49,17 @@ namespace Jint.Ex.WinForm
 
         private void butRunScrip1_Click(object sender, EventArgs e)
         {
-            AsyncronousEngine.RequestExecution("Script1.js");
+            AsyncronousEngine.RequestScriptFileExecution("Script1.js");
         }
 
         private void butRunScript2_Click(object sender, EventArgs e)
         {
-            AsyncronousEngine.RequestExecution("Script2.js");
+            AsyncronousEngine.RequestScriptFileExecution("Script2.js");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AsyncronousEngine.RequestExecution("Script3.js");
+            AsyncronousEngine.RequestScriptFileExecution("Script3.js");
         }
 
         private void butClear_Click(object sender, EventArgs e)
@@ -70,7 +70,7 @@ namespace Jint.Ex.WinForm
         private void button2_Click(object sender, EventArgs e)
         {
             butClear_Click(sender, e);
-            AsyncronousEngine.ClearQueue();
+            AsyncronousEngine.RequestClearQueue();
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)

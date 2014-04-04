@@ -64,7 +64,6 @@ AsyncronousEngine.RequestExecution("setIntervalSetTimeout.js");
 AsyncronousEngine.Wait(); // Wait util all events are processed
 AsyncronousEngine.Stop(); // Stop the event loop
 
-Console.WriteLine("*** Done ***");
 Console.ReadKey();
 </code></pre>
 
@@ -140,13 +139,22 @@ public static void LoadScript(string name, StringBuilder source)
 public static bool Start();
 
 /// &lt;summary&gt;
-/// RequestExecution the execution of one javaScript script by the event loop. 
+/// Request the execution of one javaScript script file by the event loop. 
 /// The method returns right away. 
 /// Start the AsyncronousEngine if needed.
 /// &lt;/summary&gt;
 /// &lt;param name="fileName"&gt;The filename or resource name to load and execute&lt;/param&gt;
 /// &lt;param name="block"&gt;If true after the execution, block until the event queue is empty&lt;/param&gt;
-public static bool RequestExecution(string fileName, bool block = false);
+public static bool RequestScriptFileExecution(string fileName, bool block = false)
+
+/// &lt;summary&gt;
+/// Request the execution of one javaScript source by the event loop. 
+/// The method returns right away. 
+/// Start the AsyncronousEngine if needed.
+/// &lt;/summary&gt;
+/// &lt;param name="fileName"&gt;The filename or resource name to load and execute&lt;/param&gt;
+/// &lt;param name="block"&gt;If true after the execution, block until the event queue is empty&lt;/param&gt;
+public static bool RequestScriptExecution(string source, bool block = false)    
 
 /// &lt;summary&gt;
 /// Kill the event loop

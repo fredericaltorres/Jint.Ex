@@ -6,6 +6,7 @@ using System.Timers;
 using DynamicSugar;
 using Jint;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +34,8 @@ namespace Jint.Ex
 
     internal class CallBackEvent
     {
+        private static int _timeOutIdCounter = 0;
+
         internal Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> Function;
         internal List<JsValue> Parameters;
         internal int Delay;
@@ -40,9 +43,19 @@ namespace Jint.Ex
         internal CallBackType Type;
         internal bool Enabled = true;
         internal string Source;
+        private int _alreadyWaited;
 
-        private static int _timeOutIdCounter = 0;
-
+        internal bool ReadyForExecution(int waitedMilliSecond)
+        {
+            this._alreadyWaited += waitedMilliSecond;            
+            if (this._alreadyWaited > this.Delay)
+            {
+                _alreadyWaited = 0;
+                return true;
+            }
+            else return false;
+        }
+        
         internal bool Disabled
         {
             get { return !this.Enabled; }
@@ -84,13 +97,76 @@ namespace Jint.Ex
         }
     }
 
-    internal class CallBackEventQueue
+    internal class CallBackEventQueue : IEnumerable<CallBackEvent>
     {
         private static readonly Object obj = new Object();
         private List<CallBackEvent> _queue = new List<CallBackEvent>();
 
+        System.Collections.IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        public IEnumerator<CallBackEvent> GetEnumerator()
+        {
+            return ((IEnumerable<CallBackEvent>) _queue).GetEnumerator();
+        }
+
         public int Count {
             get { return this._queue.Count; }
+        }
+
+        public CallBackEventQueue Clone()
+        {
+            lock (obj)
+            {
+                var q = new CallBackEventQueue();
+                foreach (var e in _queue)
+                    _queue.Add(e);
+                return q;
+            }
+        }
+        public void RemoveDisabledEvents()
+        {
+            lock (obj)
+            {
+                var goOn = true;
+                while (goOn)
+                {
+                    goOn = false;
+                    foreach (var e in this._queue)
+                    {
+                        if (e.Disabled)
+                        {
+                            this._queue.Remove(e);
+                            goOn = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        public CallBackEventQueue GetEventsWithNoDelay()
+        {
+            lock (obj)
+            {
+                var q = new CallBackEventQueue();
+                foreach (var e in _queue)
+                    if (e.Delay == 0 && e.Enabled)
+                        q.EnqueueNotSafe(e);
+                return q;
+            }
+        }
+        public CallBackEventQueue CloneEventWithDelay()
+        {
+            lock (obj)
+            {
+                var q = new CallBackEventQueue();
+                foreach (var e in _queue)
+                    if (e.Delay > 0 && e.Enabled)
+                        q.EnqueueNotSafe(e);
+                return q;
+            }
         }
         public void Clear()
         {
@@ -120,6 +196,10 @@ namespace Jint.Ex
             }
             return c;
         }
+        internal void EnqueueNotSafe(CallBackEvent c)
+        {
+            this._queue.Add(c);            
+        }
         public CallBackEvent Dequeue()
         {
             lock (obj)
@@ -147,17 +227,20 @@ namespace Jint.Ex
                     c.Disable();
             }
         }
-        public void RemoveTopBecauseProcessed(CallBackEvent c)
+        public void RemoveTopBecauseProcessed(CallBackEvent c, bool mainQueue)
         {
             lock (obj)
             {
                 var cc = this._queue.Find(e => e == c);
                 if (cc != null)
                     this._queue.Remove(cc);
-                if (c.Type == CallBackType.Interval) // for Interval we re add the event at then end of the queue
-                    this.Enqueue(c);
+
+                if (mainQueue)
+                    if (c.Type == CallBackType.Interval) // for Interval we re add the event at then end of the queue
+                        this.Enqueue(c);
             }
         }
+
     }
 
     public static class AsyncronousEngine
@@ -275,6 +358,70 @@ namespace Jint.Ex
         /// </summary>
         private static void __BackgroundThread()
         {
+            const int sleepTime = 32;
+
+            while (_runBackgroundThread)
+            {
+                Debug.WriteLine(string.Format("_runBackgroundThread:{0} Queue:{1}", Environment.TickCount, _eventQueue.Count));
+                if (_eventQueue.Count > 0)
+                {
+                    // Execute first all events with no delay
+                    var tmpQ = _eventQueue.GetEventsWithNoDelay();
+                    while(tmpQ.Count > 0)
+                    {
+                        ExecuteEvent(tmpQ.Peek(), tmpQ);
+                    }
+
+                    // Deal with timer event now
+                    Thread.Sleep(sleepTime); // Sleep minimal time
+                    tmpQ = _eventQueue.CloneEventWithDelay();
+                    foreach(var e in tmpQ)
+                    {
+                        if (e.ReadyForExecution(sleepTime))
+                        {
+                            ExecuteEvent(e, null);
+                        }
+                    }
+                    _eventQueue.RemoveDisabledEvents();
+                }
+                else 
+                    Thread.Sleep(sleepTime);
+            }
+            Interlocked.Decrement(ref _mainThreadRunningSemaphore);
+        }
+
+        private static void ExecuteEvent(CallBackEvent c, CallBackEventQueue tmpQ)
+        {
+            if (c.Enabled)
+            {
+                c.Enabled = false;
+                switch (c.Type)
+                {
+                    case CallBackType.ClearQueue:
+                        _eventQueue.Clear();
+                        break;
+                    case CallBackType.ScriptExecution:
+                        Execute(c.Source);
+                        break;
+                    case CallBackType.UserCallback:
+                        ExecuteCallBack(c.Function, c.Parameters);
+                        break;
+                    case CallBackType.TimeOut:
+                        ExecuteCallBack(c.Function);
+                        break;
+                    case CallBackType.Interval:
+                        c.Enabled = true;
+                        ExecuteCallBack(c.Function);
+                        break;
+                }
+            }
+            _eventQueue.RemoveTopBecauseProcessed(c, true);
+            if (tmpQ != null)
+                tmpQ.RemoveTopBecauseProcessed(c, false);
+        }
+        /*
+        private static void __BackgroundThread__1()
+        {
             while (_runBackgroundThread)
             {
                 Debug.WriteLine(string.Format("_runBackgroundThread:{0} Queue:{1}", Environment.TickCount, _eventQueue.Count));
@@ -285,11 +432,11 @@ namespace Jint.Ex
                     {
                         switch (c.Type)
                         {
-                            case CallBackType.ClearQueue     : _eventQueue.Clear(); break;
+                            case CallBackType.ClearQueue: _eventQueue.Clear(); break;
                             case CallBackType.ScriptExecution: Execute(c.Source); break;
-                            case CallBackType.UserCallback   : ExecuteCallBack(c.Function, c.Parameters); break;
-                            case CallBackType.TimeOut        :
-                            case CallBackType.Interval       : Thread.Sleep(c.Delay); ExecuteCallBack(c.Function); break;
+                            case CallBackType.UserCallback: ExecuteCallBack(c.Function, c.Parameters); break;
+                            case CallBackType.TimeOut:
+                            case CallBackType.Interval: Thread.Sleep(c.Delay); ExecuteCallBack(c.Function); break;
                         }
                         _eventQueue.RemoveTopBecauseProcessed(c);
                     }
@@ -301,7 +448,8 @@ namespace Jint.Ex
                 else Thread.Sleep(32);
             }
             Interlocked.Decrement(ref _mainThreadRunningSemaphore);
-        }
+        }*/
+
 
         /// <summary>
         /// Return true if the main thread is running (thread safe)
@@ -365,19 +513,30 @@ namespace Jint.Ex
         }
 
         /// <summary>
-        /// RequestExecution the execution of one javaScript script by the event loop. 
+        /// Request the execution of one javaScript script file by the event loop. 
         /// The method returns right away. 
         /// Start the AsyncronousEngine if needed.
         /// </summary>
         /// <param name="fileName">The filename or resource name to load and execute</param>
         /// <param name="block">If true after the execution, block until the event queue is empty</param>
-        public static bool RequestExecution(string fileName, bool block = false)
+        public static bool RequestScriptFileExecution(string fileName, bool block = false)
+        {
+            var source = new StringBuilder();
+            AsyncronousEngine.LoadScript(fileName, source);
+            return RequestScriptExecution(source.ToString(), block);
+        }
+        /// <summary>
+        /// Request the execution of one javaScript source by the event loop. 
+        /// The method returns right away. 
+        /// Start the AsyncronousEngine if needed.
+        /// </summary>
+        /// <param name="fileName">The filename or resource name to load and execute</param>
+        /// <param name="block">If true after the execution, block until the event queue is empty</param>
+        public static bool RequestScriptExecution(string source, bool block = false)
         {
             if (!IsMainThreadRunning)
                 Start();
 
-            var source = new StringBuilder();
-            AsyncronousEngine.LoadScript(fileName, source);
             _eventQueue.RequestScriptExecution(source.ToString());
 
             if (block)
@@ -388,6 +547,7 @@ namespace Jint.Ex
 
             return true;
         }
+
         /// <summary>
         /// Start the event loop
         /// </summary>

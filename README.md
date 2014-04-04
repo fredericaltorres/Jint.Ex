@@ -57,7 +57,6 @@ static void SetIntervalDemo()
     AsyncronousEngine.Wait(); // Wait util all events are processed
     AsyncronousEngine.Stop(); // Stop the event loop
 
-    Console.WriteLine("*** Done ***");
     Console.ReadKey();
 }
 ```
@@ -130,13 +129,22 @@ public static AsyncronousEngine {
     public static bool Start();
 
     /// <summary>
-    /// RequestExecution the execution of one javaScript script by the event loop. 
+    /// Request the execution of one javaScript script file by the event loop. 
     /// The method returns right away. 
     /// Start the AsyncronousEngine if needed.
     /// </summary>
     /// <param name="fileName">The filename or resource name to load and execute</param>
     /// <param name="block">If true after the execution, block until the event queue is empty</param>
-    public static bool RequestExecution(string fileName, bool block = false);
+    public static bool RequestScriptFileExecution(string fileName, bool block = false)
+    
+    /// <summary>
+    /// Request the execution of one javaScript source by the event loop. 
+    /// The method returns right away. 
+    /// Start the AsyncronousEngine if needed.
+    /// </summary>
+    /// <param name="fileName">The filename or resource name to load and execute</param>
+    /// <param name="block">If true after the execution, block until the event queue is empty</param>
+    public static bool RequestScriptExecution(string source, bool block = false)    
 
     /// <summary>
     /// Kill the event loop
@@ -156,7 +164,7 @@ public static AsyncronousEngine {
     /// <summary>
     /// Clear the event queue
     /// </summary>
-    public static void ClearQueue();
+    public static void RequestClearQueue();
 
     /// <summary>
     /// Request the execution of a JavaScript callback function. This method should be called by 

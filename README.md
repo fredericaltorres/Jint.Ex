@@ -21,12 +21,6 @@ Regarding the execution of JavaScript code, only one piece of JavaScript will be
 executed at the same time. Jint.Ex implement the concept of Event Loop, to execute script and
 callback function.
 
-## Phases
-
-1.  Implement: setTimeout(), clearTimeOut(), setInterval() and clearInterval()
-2.  Implement: Integration with WinForm
-3.  Implement: Integration with iOS
-
 ## Features
 
 ### setTimeout and clearTimeOut
@@ -83,6 +77,18 @@ function f2() {
 var timeout2 = setInterval(f2, 3000);
 ```
 
+### Implementing custom Asynchronous Api
+
+```javascript
+var s = null;
+
+storage.read(function(data) {
+
+    s = data;
+});
+```
+
+See blog: xxxxxxxxxxxxxxxxx
 
 ### Jint.Ex Api
 

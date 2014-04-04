@@ -1,8 +1,4 @@
-﻿# Jint.Ex
-
-## Status
-
-* Prototype mode
+﻿# Jint.Ex - Alpha
 
 ## Overview
 

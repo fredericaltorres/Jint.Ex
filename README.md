@@ -52,8 +52,9 @@ static void SetIntervalDemo()
 {
     Console.WriteLine("Jint setInterval() demo");
     AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
-    AsyncronousEngine.Start("setIntervalSetTimeout.js");   
-    AsyncronousEngine.Run();
+    AsyncronousEngine.RequestExecution("setIntervalSetTimeout.js");   
+    AsyncronousEngine.Wait();
+    AsyncronousEngine.Stop();
 
     Console.WriteLine("*** Done ***");
     Console.ReadKey();

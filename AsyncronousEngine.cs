@@ -160,7 +160,7 @@ namespace Jint.Ex
         }
     }
 
-    public class AsyncronousEngine
+    public static class AsyncronousEngine
     {
         private static readonly CallBackEventQueue _eventQueue                 = new CallBackEventQueue();
         private static Thread                      _mainThread                 = null;
@@ -226,7 +226,7 @@ namespace Jint.Ex
         /// </summary>
         /// <param name="name"></param>
         /// <param name="source"></param>
-        public static void LoadLibrary(string name, StringBuilder source)
+        public static void LoadScript(string name, StringBuilder source)
         {
             if (System.IO.File.Exists(name))
                 source.Append(System.IO.File.ReadAllText(name)).AppendLine();
@@ -314,7 +314,7 @@ namespace Jint.Ex
         /// <summary>
         /// Clear the event queue
         /// </summary>
-        public static void ClearQueue()
+        public static void RequestClearQueue()
         {
             _eventQueue.Enqueue(new CallBackEvent(CallBackType.ClearQueue));
         }
@@ -377,7 +377,7 @@ namespace Jint.Ex
                 Start();
 
             var source = new StringBuilder();
-            AsyncronousEngine.LoadLibrary(fileName, source);
+            AsyncronousEngine.LoadScript(fileName, source);
             _eventQueue.RequestScriptExecution(source.ToString());
 
             if (block)

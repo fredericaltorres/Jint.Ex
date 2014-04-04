@@ -114,7 +114,7 @@ and supports interaction with UI and the execution of the asynchronous events.</
 
 <p>```csharp</p>
 
-<p>public AsyncronousEngine {</p>
+<p>public static AsyncronousEngine {</p>
 
 <pre><code>/// &lt;summary&gt;
 /// The instance of Jint
@@ -127,11 +127,11 @@ public static Jint.Engine Engine = null;
 public static Assembly EmbedScriptAssembly = null;
 
 /// &lt;summary&gt;
-/// Load multiple scripts embed or from the file system. This method must be used the load
-/// libraries and must not be used to execute the main script. This method is synchronous.
+/// Load a file from the file system or as an embed resource
 /// &lt;/summary&gt;
-/// &lt;param name="fileNames"&gt;&lt;/param&gt;
-public static void LoadScripts(params string[] fileNames);
+/// &lt;param name="name"&gt;&lt;/param&gt;
+/// &lt;param name="source"&gt;&lt;/param&gt;
+public static void LoadScript(string name, StringBuilder source)
 
 /// &lt;summary&gt;
 /// Start the event loop
@@ -166,7 +166,7 @@ public static void Wait();
 /// &lt;summary&gt;
 /// Clear the event queue
 /// &lt;/summary&gt;
-public static void ClearQueue();
+public static void RequestClearQueue();
 
 /// &lt;summary&gt;
 /// Request the execution of a JavaScript callback function. This method should be called by 

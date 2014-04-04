@@ -104,7 +104,7 @@ and supports interaction with UI and the execution of the asynchronous events.
 
 ```csharp
 
-public AsyncronousEngine {
+public static AsyncronousEngine {
 
     /// <summary>
     /// The instance of Jint
@@ -117,11 +117,11 @@ public AsyncronousEngine {
     public static Assembly EmbedScriptAssembly = null;
 
     /// <summary>
-    /// Load multiple scripts embed or from the file system. This method must be used the load
-    /// libraries and must not be used to execute the main script. This method is synchronous.
+    /// Load a file from the file system or as an embed resource
     /// </summary>
-    /// <param name="fileNames"></param>
-    public static void LoadScripts(params string[] fileNames);
+    /// <param name="name"></param>
+    /// <param name="source"></param>
+    public static void LoadScript(string name, StringBuilder source)
 
     /// <summary>
     /// Start the event loop

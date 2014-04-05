@@ -17,8 +17,8 @@ namespace JintEx_UnitTests
         private Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> _callBackFunction;
 
         /// <summary>
-        /// Execute the loading of the string in a background thread and then push a request to
-        /// execute the callback function
+        /// Execute the reading of the string in a background thread and then request the
+        /// execution of the callback function
         /// </summary>
         private void __BackgroundThread(object p)
         {
@@ -54,31 +54,29 @@ namespace JintEx_UnitTests
     [TestClass]
     public class AsyncApiUnitTests
     {
-        private object GetJSVariable(string name)
+        private string GetJSVariable(string name)
         {
             var v = Jint.Ex.HelperClass.ConvertJsValueToNetValue(AsyncronousEngine.Engine.Execute(name).GetCompletionValue());
-            return v;
+            return v as string;
         }
         private void RunScript(string script)
         {
             AsyncronousEngine.Reset();
-            AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
+            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
             AsyncronousEngine.Engine.SetValue("storage", new Storage());
-            AsyncronousEngine.RequestScriptFileExecution(script, true);
+            AsyncronousEngine.RequestScriptFileExecution(script, block: true); 
         }
         [TestMethod]
         public void Storage_Sync()
         {
             RunScript("storage.sync.js");
-            var s = GetJSVariable("s") as String;
-            Assert.AreEqual(409800, s.Length);
+            Assert.AreEqual(409800, GetJSVariable("s").Length);
         }
         [TestMethod]
         public void Storage_Async()
         {
             RunScript("storage.async.js");
-            var s = GetJSVariable("s") as String;
-            Assert.AreEqual(409800, s.Length);
+            Assert.AreEqual(409800, GetJSVariable("s").Length);
         }
     }
 }

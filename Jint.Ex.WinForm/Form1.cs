@@ -20,7 +20,7 @@ namespace Jint.Ex.WinForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
+            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
             AsyncronousEngine.Engine.SetValue("setUserMessage", new Action<string>(__setUserMessage__));
         }
 

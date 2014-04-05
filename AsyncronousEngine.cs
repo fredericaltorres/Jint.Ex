@@ -6,243 +6,13 @@ using System.Timers;
 using DynamicSugar;
 using Jint;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using Jint.Native;
 
 namespace Jint.Ex
 {
-    internal enum CallBackType
-    {
-        TimeOut,
-        Interval,
-        ScriptExecution,
-        UserCallback,
-        ClearQueue
-    }
-
-    internal enum ExecutionEndType
-    {
-        Undefined,
-        EndOfScript,
-        UserCancel,
-        Error
-    }
-
-    internal class CallBackEvent
-    {
-        private static int _timeOutIdCounter = 0;
-
-        internal Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> Function;
-        internal List<JsValue> Parameters;
-        internal int Delay;
-        internal int Id;
-        internal CallBackType Type;
-        internal bool Enabled = true;
-        internal string Source;
-        private int _alreadyWaited;
-
-        internal bool ReadyForExecution(int waitedMilliSecond)
-        {
-            this._alreadyWaited += waitedMilliSecond;            
-            if (this._alreadyWaited > this.Delay)
-            {
-                _alreadyWaited = 0;
-                return true;
-            }
-            else return false;
-        }
-        
-        internal bool Disabled
-        {
-            get { return !this.Enabled; }
-        }
-
-        private CallBackEvent()
-        {
-            this.Id = _timeOutIdCounter++;
-        }
-
-        public CallBackEvent(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> callBackFunction, List<JsValue> parameters) : this()
-        {
-            this.Type = CallBackType.UserCallback;
-            this.Function = callBackFunction;
-            this.Parameters = parameters;
-        }
-        
-        public CallBackEvent(string source) : this()
-        {
-            this.Source = source;
-            this.Type = CallBackType.ScriptExecution;
-        }
-
-        public CallBackEvent(CallBackType callBackType) : this()
-        {
-            this.Type = callBackType;
-        }
-
-        public CallBackEvent(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> function, double delay, CallBackType type) : this()
-        {
-            this.Function = function;
-            this.Delay    = (int)delay;
-            this.Type     = type;
-        }
-
-        public void Disable()
-        {
-            this.Enabled = false;
-        }
-    }
-
-    internal class CallBackEventQueue : IEnumerable<CallBackEvent>
-    {
-        private static readonly Object obj = new Object();
-        private List<CallBackEvent> _queue = new List<CallBackEvent>();
-
-        System.Collections.IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        public IEnumerator<CallBackEvent> GetEnumerator()
-        {
-            return ((IEnumerable<CallBackEvent>) _queue).GetEnumerator();
-        }
-
-        public int Count {
-            get { return this._queue.Count; }
-        }
-
-        public CallBackEventQueue Clone()
-        {
-            lock (obj)
-            {
-                var q = new CallBackEventQueue();
-                foreach (var e in _queue)
-                    _queue.Add(e);
-                return q;
-            }
-        }
-        public void RemoveDisabledEvents()
-        {
-            lock (obj)
-            {
-                var goOn = true;
-                while (goOn)
-                {
-                    goOn = false;
-                    foreach (var e in this._queue)
-                    {
-                        if (e.Disabled)
-                        {
-                            this._queue.Remove(e);
-                            goOn = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        public CallBackEventQueue GetEventsWithNoDelay()
-        {
-            lock (obj)
-            {
-                var q = new CallBackEventQueue();
-                foreach (var e in _queue)
-                    if (e.Delay == 0 && e.Enabled)
-                        q.EnqueueNotSafe(e);
-                return q;
-            }
-        }
-        public CallBackEventQueue CloneEventWithDelay()
-        {
-            lock (obj)
-            {
-                var q = new CallBackEventQueue();
-                foreach (var e in _queue)
-                    if (e.Delay > 0 && e.Enabled)
-                        q.EnqueueNotSafe(e);
-                return q;
-            }
-        }
-        public void Clear()
-        {
-            // No need to lock because this method is only called by
-            // the event loop
-            this._queue.Clear();            
-        }        
-        public void RequestScriptExecution(string source)
-        {
-            lock (obj)
-            {
-                this._queue.Insert(0, new CallBackEvent(source));
-            }
-        }
-        public void EndqueueCallBackExecution(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> function, double delay, CallBackType type)
-        {
-            lock (obj)
-            {
-                this._queue.Add(new CallBackEvent(function, delay, type));
-            }
-        }
-        public CallBackEvent Enqueue(CallBackEvent c)
-        {
-            lock (obj)
-            {
-                this._queue.Add(c);
-            }
-            return c;
-        }
-        internal void EnqueueNotSafe(CallBackEvent c)
-        {
-            this._queue.Add(c);            
-        }
-        public CallBackEvent Dequeue()
-        {
-            lock (obj)
-            {
-                var c = this._queue[0];
-                this._queue.RemoveAt(0);
-                return c;
-            }
-        }
-        public CallBackEvent Peek()
-        {
-            lock (obj)
-            {
-                return this._queue[0];
-            }
-        }
-        public void ClearCallBackEvent(int id)
-        {
-            lock (obj)
-            {
-                var c = this._queue.FirstOrDefault(e => e.Id == id);
-                if (c == null)
-                    throw new ArgumentException(string.Format("Cannot find timeout or interval id {0}", id));
-                else
-                    c.Disable();
-            }
-        }
-        public void RemoveTopBecauseProcessed(CallBackEvent c, bool mainQueue)
-        {
-            lock (obj)
-            {
-                var cc = this._queue.Find(e => e == c);
-                if (cc != null)
-                    this._queue.Remove(cc);
-
-                if (mainQueue)
-                    if (c.Type == CallBackType.Interval) // for Interval we re add the event at then end of the queue
-                        this.Enqueue(c);
-            }
-        }
-
-    }
-
     public static class AsyncronousEngine
     {
         private static readonly CallBackEventQueue _eventQueue                 = new CallBackEventQueue();
@@ -254,7 +24,7 @@ namespace Jint.Ex
         /// <summary>
         /// Reference the assembly that embed the JavaScript scripts.
         /// </summary>
-        public static Assembly EmbedScriptAssembly = null;
+        public static List<Assembly> EmbedScriptAssemblies = new List<Assembly>();
 
         /// <summary>
         /// Allocate a Jint instance and registered all the standard methods
@@ -279,6 +49,7 @@ namespace Jint.Ex
         /// </summary>
         public static void Reset()
         {
+            AsyncronousEngine.EmbedScriptAssemblies.Clear();
             AsyncronousEngine.Stop();
             _engine = null;
         }
@@ -314,7 +85,7 @@ namespace Jint.Ex
             if (System.IO.File.Exists(name))
                 source.Append(System.IO.File.ReadAllText(name)).AppendLine();
             else
-                source.Append(DS.Resources.GetTextResource(name, EmbedScriptAssembly)).AppendLine();
+                source.Append(DS.Resources.GetTextResource(name, EmbedScriptAssemblies)).AppendLine();
         }
         /// <summary>
         /// Request the execution of a JavaScript callback function. This method should be called by 
@@ -419,38 +190,7 @@ namespace Jint.Ex
             if (tmpQ != null)
                 tmpQ.RemoveTopBecauseProcessed(c, false);
         }
-        /*
-        private static void __BackgroundThread__1()
-        {
-            while (_runBackgroundThread)
-            {
-                Debug.WriteLine(string.Format("_runBackgroundThread:{0} Queue:{1}", Environment.TickCount, _eventQueue.Count));
-                if (_eventQueue.Count > 0)
-                {
-                    var c = _eventQueue.Peek();
-                    if (c.Enabled)
-                    {
-                        switch (c.Type)
-                        {
-                            case CallBackType.ClearQueue: _eventQueue.Clear(); break;
-                            case CallBackType.ScriptExecution: Execute(c.Source); break;
-                            case CallBackType.UserCallback: ExecuteCallBack(c.Function, c.Parameters); break;
-                            case CallBackType.TimeOut:
-                            case CallBackType.Interval: Thread.Sleep(c.Delay); ExecuteCallBack(c.Function); break;
-                        }
-                        _eventQueue.RemoveTopBecauseProcessed(c);
-                    }
-                    else
-                    {
-                        _eventQueue.Dequeue();
-                    }
-                }
-                else Thread.Sleep(32);
-            }
-            Interlocked.Decrement(ref _mainThreadRunningSemaphore);
-        }*/
-
-
+        
         /// <summary>
         /// Return true if the main thread is running (thread safe)
         /// </summary>

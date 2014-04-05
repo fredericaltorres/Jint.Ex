@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallBackEvent.cs" />
+    <Compile Include="CallBackEventQueue.cs" />
+    <Compile Include="EnumType.cs" />
     <Compile Include="AsyncronousEngine.cs" />
     <Compile Include="DynamicSugar.Resources.cs" />
     <Compile Include="Utils.cs" />

@@ -33,6 +33,32 @@ namespace DynamicSugar {
                         return resource;
                 throw new System.ApplicationException(string.Format("Resource '{0}' not find in assembly '{1}'", resourceFileName, Assembly.GetExecutingAssembly().FullName));
             }
+
+            /// <summary>
+            /// Return the content of a text file embed as a resource.
+            /// The function takes care of finding the fully qualify name, in the first
+            /// assembly when the resource is found
+            /// </summary>
+            /// <param name="resourceFileName">The file name of the resource</param>
+            /// <param name="assemblies">A list of assemblies in which to search for the resources</param>
+            /// <returns></returns>
+            public static string GetTextResource(string resourceFileName, List<Assembly> assemblies)
+            {
+                System.Exception lastEx = null;
+                foreach (var a in assemblies)
+                {
+                    try
+                    {
+                        return GetTextResource(resourceFileName, a);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        lastEx = ex;
+                    }
+                }
+                throw lastEx;
+            }
+
             /// <summary>
             /// Return the content of a text file embed as a resource.
             /// The function takes care of finding the fully qualify name, in the current

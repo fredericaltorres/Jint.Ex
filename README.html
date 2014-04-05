@@ -59,7 +59,7 @@ static void SetIntervalDemo()
 {
     Console.WriteLine("Jint setInterval() demo");</p>
 
-<pre><code>AsyncronousEngine.EmbedScriptAssembly = Assembly.GetExecutingAssembly();
+<pre><code>AsyncronousEngine.EmbedScriptAssemblies = Assembly.GetExecutingAssembly();
 AsyncronousEngine.RequestExecution("setIntervalSetTimeout.js");   
 AsyncronousEngine.Wait(); // Wait util all events are processed
 AsyncronousEngine.Stop(); // Stop the event loop
@@ -123,7 +123,7 @@ public static Jint.Engine Engine = null;
 /// &lt;summary&gt;
 /// Reference the assembly that embed the JavaScript scripts.
 /// &lt;/summary&gt;
-public static Assembly EmbedScriptAssembly = null;
+public static Assembly EmbedScriptAssemblies = null;
 
 /// &lt;summary&gt;
 /// Load a file from the file system or as an embed resource

@@ -6,11 +6,12 @@ The Jint.Ex framework extends ***[Jint](https://github.com/sebastienros/jint)***
 
 Jint.Ex intend to be as portable as Jint and therefore should work on Windows, MacOS, iOS, Android and Linux. My current focus is Windows WinForm and iOS UIKit with the Xamarin tools.
 
-* ***Event-driven interaction***: Jint.Ex.AsyncronousEngine is event-driven interaction run time for Jint to build non blocking UI and creating asynchronous API with a focus on Windows and iOS.
+* ***Event-driven interaction***: Jint.Ex.AsyncronousEngine is an event-driven interaction run time for Jint to build non blocking UI and creating asynchronous API with a focus on Windows and iOS.
 
-* ***setTimeOut() and setInterval()***: The methods setTimeOut() and setInterval() are part of Browser DOM standard and therefore not part on Jint. Jint.Ex.AsyncronousEngine offer the methods and the clearTimeOut() and clearInterval() method.
+* ***setTimeOut() and setInterval()***: The methods setTimeOut() and setInterval() are part of Browser DOM standard and not part on Jint. 
+Jint.Ex.AsyncronousEngine offer the methods as well as the clearTimeOut() and clearInterval() methods.
 
-* ***localeStorage**: A singleton object compatible with the HTML5 storage standard. No available yet.
+* ***localeStorage**: A singleton object compatible with the HTML5 storage standard. Not available yet.
 
 ## Features
 

@@ -11,7 +11,7 @@ Jint.Ex intend to be as portable as Jint and therefore should work on Windows, M
 * ***setTimeOut() and setInterval()***: The methods setTimeOut() and setInterval() are part of Browser DOM standard and not part on Jint. 
 Jint.Ex.AsyncronousEngine offer the methods as well as the clearTimeOut() and clearInterval() methods.
 
-* ***localeStorage**: A singleton object compatible with the HTML5 storage standard. Not available yet.
+* ***localeStorage***: A singleton object compatible with the HTML5 storage standard. Not available yet.
 
 ## Features
 

@@ -2,23 +2,15 @@
 
 ## Overview
 
-Jint.Ex is a C# library adding new features to the JavaScript runtime ***[Jint](https://github.com/sebastienros/jint)***.
-The main goal is to be able to integrate Jint with UI SDK like 
+The Jint.Ex framework extends ***[Jint](https://github.com/sebastienros/jint)*** with features that are not part of the ECMAScript standard, but use full when mixing C# and JavaScript in the same application. 
 
-1. .NET WinForm in Windows
-2. UIKit SDK on iOS with the Xamarin stack 
-3. Android too with Xamarin stack
-4. WinPhone
+Jint.Ex intend to be as portable as Jint and therefore should work on Windows, MacOS, iOS, Android and Linux. My current focus is Windows WinForm and iOS UIKit with the Xamarin tools.
 
-Integrating with these UI SDKs (1 and 2 are my primary goals) requires the following:
+* ***Event-driven interaction***: Jint.Ex.AsyncronousEngine is event-driven interaction run time for Jint to build non blocking UI and creating asynchronous API with a focus on Windows and iOS.
 
-* Building non blocking UI
-    * Script are executed in a background thread with ability to access UI (forms and controls)
-* Abililty to build true C# asynchronous API interacting with JavaScript code
-* Ability to call setTimeout() and setInterval()
+* ***setTimeOut() and setInterval()***: The methods setTimeOut() and setInterval() are part of Browser DOM standard and therefore not part on Jint. Jint.Ex.AsyncronousEngine offer the methods and the clearTimeOut() and clearInterval() method.
 
-Jint.Ex implement the concept of Event Loop, to execute scripts and callback functions.
-Only JavaScript script or callback is executed at a specific moment.
+* ***localeStorage**: A singleton object compatible with the HTML5 storage standard. No available yet.
 
 ## Features
 

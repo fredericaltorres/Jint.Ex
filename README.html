@@ -2,29 +2,15 @@
 
 <h2>Overview</h2>
 
-<p>Jint.Ex is a C# library adding new features to the JavaScript runtime <strong><em><a href="https://github.com/sebastienros/jint">Jint</a></em></strong>.
-The main goal is to be able to integrate Jint with UI SDK like </p>
+<p>The Jint.Ex framework extends <strong><em><a href="https://github.com/sebastienros/jint">Jint</a></em></strong> with features that are not part of the ECMAScript standard, but use full when mixing C# and JavaScript in the same application. </p>
 
-<ol>
-<li>.NET WinForm in Windows</li>
-<li>UIKit SDK on iOS with the Xamarin stack </li>
-<li>Android too with Xamarin stack</li>
-<li>WinPhone</li>
-</ol>
-
-<p>Integrating with these UI SDKs (1 and 2 are my primary goals) requires the following:</p>
+<p>Jint.Ex intend to be as portable as Jint and therefore should work on Windows, MacOS, iOS, Android and Linux. My current focus is Windows WinForm and iOS UIKit with the Xamarin tools.</p>
 
 <ul>
-<li>Building non blocking UI
-<ul>
-<li>Script are executed in a background thread with ability to access UI (forms and controls)</li>
-</ul></li>
-<li>Abililty to build true C# asynchronous API interacting with JavaScript code</li>
-<li>Ability to call setTimeout() and setInterval()</li>
+<li><p><strong><em>Event-driven interaction</em></strong>: Jint.Ex.AsyncronousEngine is event-driven interaction run time for Jint to build non blocking UI and creating asynchronous API with a focus on Windows and iOS.</p></li>
+<li><p><strong><em>setTimeOut() and setInterval()</em></strong>: The methods setTimeOut() and setInterval() are part of Browser DOM standard and therefore not part on Jint. Jint.Ex.AsyncronousEngine offer the methods and the clearTimeOut() and clearInterval() method.</p></li>
+<li><p><strong>*localeStorage</strong>: A singleton object compatible with the HTML5 storage standard. No available yet.</p></li>
 </ul>
-
-<p>Jint.Ex implement the concept of Event Loop, to execute scripts and callback functions.
-Only JavaScript script or callback is executed at a specific moment.</p>
 
 <h2>Features</h2>
 

@@ -47,29 +47,29 @@ namespace Jint.Ex.WinForm
             }
         }
 
-        private void butRunScrip1_Click(object sender, EventArgs e)
+        private void butSynchronousExecution_Click(object sender, EventArgs e)
         {
             AsyncronousEngine.RequestScriptFileExecution("Script1.js");
         }
 
-        private void butRunScript2_Click(object sender, EventArgs e)
+        private void butASynchronousExecution_Click(object sender, EventArgs e)
         {
             AsyncronousEngine.RequestScriptFileExecution("Script2.js");
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void butTimer_Click(object sender, EventArgs e)
         {
             AsyncronousEngine.RequestScriptFileExecution("Script3.js");
         }
 
-        private void butClear_Click(object sender, EventArgs e)
+        private void butClearListBox_Click(object sender, EventArgs e)
         {
             this.lbOut.Items.Clear();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void butClearEventQueue_Click(object sender, EventArgs e)
         {
-            butClear_Click(sender, e);
+            butClearListBox_Click(sender, e);
             AsyncronousEngine.RequestClearQueue();
         }
 
@@ -85,6 +85,11 @@ namespace Jint.Ex.WinForm
                 Thread.Sleep(100);
                 Application.DoEvents();
             });
+        }
+
+        private void butMultipleTimer_Click(object sender, EventArgs e)
+        {
+            AsyncronousEngine.RequestScriptFileExecution("Script.MultipleTimers.js");
         }
     }
 }

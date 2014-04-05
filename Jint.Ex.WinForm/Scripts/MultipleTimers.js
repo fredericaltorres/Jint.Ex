@@ -1,10 +1,8 @@
-﻿
-print("Starting Script.MultipleTimers.js");
-
-var secondCounter = 0;
-var halfSecondCounter = 0;
+﻿var secondCounter       = 0;
+var halfSecondCounter   = 0;
 
 function MessageEverySecond() {
+
     secondCounter++;
     setUserMessage("Every second " + secondCounter);
 }

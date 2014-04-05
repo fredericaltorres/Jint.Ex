@@ -64,7 +64,7 @@ namespace JintEx_UnitTests
             AsyncronousEngine.Reset();
             AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
             AsyncronousEngine.Engine.SetValue("storage", new Storage());
-            AsyncronousEngine.RequestScriptFileExecution(script, block: true); 
+            AsyncronousEngine.RequestFileExecution(script, block: true); 
         }
         [TestMethod]
         public void Storage_Sync()

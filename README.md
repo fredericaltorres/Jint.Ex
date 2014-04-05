@@ -135,7 +135,7 @@ public static AsyncronousEngine {
     /// </summary>
     /// <param name="fileName">The filename or resource name to load and execute</param>
     /// <param name="block">If true after the execution, block until the event queue is empty</param>
-    public static bool RequestScriptFileExecution(string fileName, bool block = false)
+    public static bool RequestFileExecution(string fileName, bool block = false)
     
     /// <summary>
     /// Request the execution of one javaScript source by the event loop. 

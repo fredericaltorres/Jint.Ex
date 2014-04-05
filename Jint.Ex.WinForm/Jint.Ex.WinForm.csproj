@@ -88,16 +88,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\Script1.js" />
+    <EmbeddedResource Include="Scripts\SynchronousExecution.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\Script2.js" />
+    <EmbeddedResource Include="Scripts\AsynchronousExecution.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\Script3.js" />
+    <EmbeddedResource Include="Scripts\Timer.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\Script.MultipleTimers.js" />
+    <EmbeddedResource Include="Scripts\MultipleTimers.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -15,6 +15,12 @@ namespace JintEx_UnitTests
     public class Storage
     {
         private Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> _callBackFunction;
+        private AsyncronousEngine _asyncronousEngine;
+
+        public Storage(AsyncronousEngine asyncronousEngine)
+        {
+            this._asyncronousEngine = asyncronousEngine;
+        }
 
         /// <summary>
         /// Execute the reading of the string in a background thread and then request the
@@ -23,7 +29,7 @@ namespace JintEx_UnitTests
         private void __BackgroundThread(object p)
         {
             var s = read();
-            AsyncronousEngine.RequestCallbackExecution(_callBackFunction, new List<JsValue>() { s });
+            this._asyncronousEngine.RequestCallbackExecution(_callBackFunction, new List<JsValue>() { s });
         }
         /// <summary>
         /// Synchronous api
@@ -45,7 +51,7 @@ namespace JintEx_UnitTests
         /// <returns></returns>
         public string read(Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue> callBackFunction)
         {
-            _callBackFunction = callBackFunction;
+            this._callBackFunction = callBackFunction;
             ThreadPool.QueueUserWorkItem(new WaitCallback(__BackgroundThread), null);
             return null;
         }
@@ -54,17 +60,19 @@ namespace JintEx_UnitTests
     [TestClass]
     public class AsyncApiUnitTests
     {
+        private AsyncronousEngine _asyncronousEngine;
+
         private string GetJSVariable(string name)
         {
-            var v = Jint.Ex.HelperClass.ConvertJsValueToNetValue(AsyncronousEngine.Engine.Execute(name).GetCompletionValue());
+            var v = Jint.Ex.HelperClass.ConvertJsValueToNetValue(_asyncronousEngine.Engine.Execute(name).GetCompletionValue());
             return v as string;
         }
         private void RunScript(string script)
         {
-            AsyncronousEngine.Reset();
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.Engine.SetValue("storage", new Storage());
-            AsyncronousEngine.RequestFileExecution(script, block: true); 
+            _asyncronousEngine = new AsyncronousEngine();
+            _asyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
+            _asyncronousEngine.Engine.SetValue("storage", new Storage(_asyncronousEngine));
+            _asyncronousEngine.RequestFileExecution(script, block: true);
         }
         [TestMethod]
         public void Storage_Sync()

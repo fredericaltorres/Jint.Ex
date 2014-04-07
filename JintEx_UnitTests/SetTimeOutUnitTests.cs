@@ -8,73 +8,73 @@ namespace JintEx_UnitTests
     [TestClass]
     public class SetTimeOut_SetInterval_UnitTests
     {
+        private AsyncronousEngine ae;
+
+        private AsyncronousEngine GetNewAsyncronousEngine()
+        {
+            ae = new AsyncronousEngine();
+            ae.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
+            return ae;
+        }
         private object GetJSVariable(string name)
         {
-            var v = Jint.Ex.HelperClass.ConvertJsValueToNetValue(AsyncronousEngine.Engine.Execute(name).GetCompletionValue());
+            var v = Jint.Ex.HelperClass.ConvertJsValueToNetValue(ae.Engine.Execute(name).GetCompletionValue());
             return v;
         }
         
         [TestMethod]
         public void setIntervalSetTimeoutNested()
-        {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.RequestFileExecution("setIntervalSetTimeoutNested.js", true);
+        {            
+            GetNewAsyncronousEngine().RequestFileExecution("setIntervalSetTimeoutNested.js", true);
             Assert.AreEqual(8.0, GetJSVariable("counter"));
         }
 
         [TestMethod]
         public void setTimeoutNestedNested()
         {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.RequestFileExecution("SetTimeoutNestedNested.js", true);
+            GetNewAsyncronousEngine().RequestFileExecution("SetTimeoutNestedNested.js", true);
             Assert.AreEqual(3.0, GetJSVariable("counter"));
         }
 
         [TestMethod]
         public void setTimeoutNested()
         {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.RequestFileExecution("SetTimeoutNested.js", true);
+            GetNewAsyncronousEngine().RequestFileExecution("SetTimeoutNested.js", true);
             Assert.AreEqual(2.0, GetJSVariable("counter"));
         }
 
         [TestMethod]
         public void setTimeout_1()
         {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.RequestFileExecution("setTimeout.1.js", true);
+            GetNewAsyncronousEngine().RequestFileExecution("setTimeout.1.js", true);
             Assert.AreEqual(1.0, GetJSVariable("counter"));
         }
 
         [TestMethod]
         public void setTimeout_3()
         {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.RequestFileExecution("setTimeout.3.js", true);
+            GetNewAsyncronousEngine().RequestFileExecution("setTimeout.3.js", true);
             Assert.AreEqual(2.0, GetJSVariable("counter"));
         }
 
         [TestMethod]
         public void clearTimeout()
         {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.RequestFileExecution("clearTimeout.js", true);
+            GetNewAsyncronousEngine().RequestFileExecution("clearTimeout.js", true);
             Assert.AreEqual(0.0, GetJSVariable("counter"));
         }
 
         [TestMethod]
         public void setInterval()
         {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.RequestFileExecution("setInterval.js", true);
+            GetNewAsyncronousEngine().RequestFileExecution("setInterval.js", true);
             Assert.AreEqual(4.0, GetJSVariable("counter"));
         }
 
         [TestMethod]
         public void clearInterval()
         {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            AsyncronousEngine.RequestFileExecution("clearInterval.js", true);
+            GetNewAsyncronousEngine().RequestFileExecution("clearInterval.js", true);
             Assert.AreEqual(0.0, GetJSVariable("counter"));
         }
     }

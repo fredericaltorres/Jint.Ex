@@ -105,25 +105,25 @@ and supports interaction with UI and the execution of the asynchronous events.</
 <pre><code>/// &lt;summary&gt;
 /// The instance of Jint
 /// &lt;/summary&gt;
-public static Jint.Engine Engine = null;
+public Jint.Engine Engine = null;
 
 /// &lt;summary&gt;
 /// Reference the assembly that embed the JavaScript scripts.
 /// &lt;/summary&gt;
-public static Assembly EmbedScriptAssembly = null;
+public Assembly EmbedScriptAssembly = null;
 
 /// &lt;summary&gt;
 /// Load a file from the file system or as an embed resource
 /// &lt;/summary&gt;
 /// &lt;param name="name"&gt;&lt;/param&gt;
 /// &lt;param name="source"&gt;&lt;/param&gt;
-public static void LoadScript(string name, StringBuilder source)
+public void LoadScript(string name, StringBuilder source);
 
 /// &lt;summary&gt;
 /// Start the event loop
 /// &lt;/summary&gt;
 /// &lt;returns&gt;&lt;/returns&gt;
-public static bool Start();
+public bool Start();
 
 /// &lt;summary&gt;
 /// Request the execution of one javaScript script file by the event loop. 
@@ -132,7 +132,7 @@ public static bool Start();
 /// &lt;/summary&gt;
 /// &lt;param name="fileName"&gt;The filename or resource name to load and execute&lt;/param&gt;
 /// &lt;param name="block"&gt;If true after the execution, block until the event queue is empty&lt;/param&gt;
-public static bool RequestFileExecution(string fileName, bool block = false)
+public bool RequestFileExecution(string fileName, bool block = false);
 
 /// &lt;summary&gt;
 /// Request the execution of one javaScript source by the event loop. 
@@ -141,27 +141,27 @@ public static bool RequestFileExecution(string fileName, bool block = false)
 /// &lt;/summary&gt;
 /// &lt;param name="fileName"&gt;The filename or resource name to load and execute&lt;/param&gt;
 /// &lt;param name="block"&gt;If true after the execution, block until the event queue is empty&lt;/param&gt;
-public static bool RequestScriptExecution(string source, bool block = false)    
+public bool RequestScriptExecution(string source, bool block = false);
 
 /// &lt;summary&gt;
 /// Kill the event loop
 /// &lt;/summary&gt;
-public static void Kill();
+public void Kill();
 
 /// &lt;summary&gt;
 /// Stop the event loop
 /// &lt;/summary&gt;
-public static void Stop();
+public void Stop();
 
 /// &lt;summary&gt;
 /// Wait until the event queue is empty
 /// &lt;/summary&gt;
-public static void Wait();
+public void Wait();
 
 /// &lt;summary&gt;
 /// Clear the event queue
 /// &lt;/summary&gt;
-public static void RequestClearQueue();
+public void RequestClearQueue();
 
 /// &lt;summary&gt;
 /// Request the execution of a JavaScript callback function. This method should be called by 
@@ -169,8 +169,9 @@ public static void RequestClearQueue();
 /// &lt;/summary&gt;
 /// &lt;param name="callBackFunction"&gt;&lt;/param&gt;
 /// &lt;param name="parameters"&gt;&lt;/param&gt;
-public static void RequestCallbackExecution(Func&lt;Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue&gt; callBackFunction, List&lt;JsValue&gt;  parameters);
+public void RequestCallbackExecution(Func&lt;Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue&gt; callBackFunction, List&lt;JsValue&gt;  parameters);
 </code></pre>
 
-<p>}
-```</p>
+<p>}</p>
+
+<p>```</p>

@@ -9,6 +9,7 @@ namespace Jint.Ex.WinForm
 {
     public partial class Form1 : Form
     {
+        private AsyncronousEngine _asyncronousEngine;
         public Form1()
         {
             InitializeComponent();
@@ -16,10 +17,11 @@ namespace Jint.Ex.WinForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            AsyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
+            _asyncronousEngine = new AsyncronousEngine();
+            _asyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
             // Expose to the JavaScript the function setUserMessage which add a string 
             // in the Listbox
-            AsyncronousEngine.Engine.SetValue("setUserMessage", new Action<string>(__setUserMessage__));
+            _asyncronousEngine.Engine.SetValue("setUserMessage", new Action<string>(__setUserMessage__));
         }
 
         private void __setUserMessage__(string s)
@@ -47,22 +49,22 @@ namespace Jint.Ex.WinForm
 
         private void butSynchronousExecution_Click(object sender, EventArgs e)
         {
-            AsyncronousEngine.RequestFileExecution("SynchronousExecution.js");
+            _asyncronousEngine.RequestFileExecution("SynchronousExecution.js");
         }
 
         private void butASynchronousExecution_Click(object sender, EventArgs e)
         {
-            AsyncronousEngine.RequestFileExecution("AsynchronousExecution.js");
+            _asyncronousEngine.RequestFileExecution("AsynchronousExecution.js");
         }
 
         private void butTimer_Click(object sender, EventArgs e)
         {
-            AsyncronousEngine.RequestFileExecution("Timer.js");
+            _asyncronousEngine.RequestFileExecution("Timer.js");
         }
 
         private void butMultipleTimer_Click(object sender, EventArgs e)
         {
-            AsyncronousEngine.RequestFileExecution("MultipleTimers.js");
+            _asyncronousEngine.RequestFileExecution("MultipleTimers.js");
         }
 
         private void butClearListBox_Click(object sender, EventArgs e)
@@ -73,7 +75,7 @@ namespace Jint.Ex.WinForm
         private void butClearEventQueue_Click(object sender, EventArgs e)
         {
             butClearListBox_Click(sender, e);
-            AsyncronousEngine.RequestClearQueue();
+            _asyncronousEngine.RequestClearQueue();
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -84,7 +86,7 @@ namespace Jint.Ex.WinForm
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             // How to correctly request stopping the AsyncronousEngine event loop
-            AsyncronousEngine.Stop(() =>
+            _asyncronousEngine.Stop(() =>
             {
                 Thread.Sleep(100);
                 Application.DoEvents();

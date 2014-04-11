@@ -82,9 +82,9 @@
       <Project>{678738da-f723-4920-b9e5-cad667104bda}</Project>
       <Name>Jint</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Jint.Ex.csproj">
+    <ProjectReference Include="..\Jint.Ex.Win.csproj">
       <Project>{1e1be100-50df-4ef2-8771-ec67b0548cde}</Project>
-      <Name>Jint.Ex</Name>
+      <Name>Jint.Ex.Win</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

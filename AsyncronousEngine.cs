@@ -88,6 +88,17 @@ namespace Jint.Ex
                 source.Append(DS.Resources.GetTextResource(name, EmbedScriptAssemblies)).AppendLine();
         }
         /// <summary>
+        /// Load a file from the file system or as an embed resource
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public string LoadScript(string name)
+        {
+            var source = new StringBuilder();
+            LoadScript(name, source);
+            return source.ToString();
+        }
+        /// <summary>
         /// Request the execution of a JavaScript callback function. This method should be called by 
         /// C# custom object that want to implement asynchronous api.
         /// </summary>
@@ -114,15 +125,27 @@ namespace Jint.Ex
                 );
             return r;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public void SetValue(string name, Object obj)
+        {
+            this.Engine.SetValue(name, obj);
+        }
+
         /// <summary>
         /// Execute the JavaScrip source in a blocking way
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        private ExecutionEndType Execute(string source)
+        public JsValue Execute(string source)
         {
-            this.Engine.Execute(source);
-            return ExecutionEndType.Undefined;
+            var jsValue = this.Engine.Execute(source).GetCompletionValue();
+            return jsValue;
         }
         /// <summary>
         /// Background thread dedicated to execute the MainScript

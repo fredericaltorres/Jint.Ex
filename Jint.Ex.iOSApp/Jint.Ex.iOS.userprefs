@@ -1,11 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Jint.Ex.iOS/Jint_Ex_iOSViewController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Jint.Ex.iOS/Scripts/Timer.js">
     <Files>
-      <File FileName="../Jint.Ex.WinForm/Form1.cs" Line="77" Column="13" />
-      <File FileName="Jint.Ex.iOS/Jint_Ex_iOSViewController.cs" Line="67" Column="68" />
-      <File FileName="Jint.Ex.iOS/Jint_Ex_iOSViewController.designer.cs" Line="1" Column="1" />
-      <File FileName="../DynamicSugar.Resources.cs" Line="52" Column="60" />
+      <File FileName="Jint.Ex.iOS/AppDelegate.cs" Line="73" Column="35" />
+      <File FileName="Jint.Ex.iOS/Scripts/Timer.js" Line="5" Column="35" />
+      <File FileName="Jint.Ex.iOS/Scripts/MultipleTimers.js" Line="17" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

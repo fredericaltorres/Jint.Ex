@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="LocalStorageUnitTests.cs" />
     <Compile Include="SyncApiUnitTests.cs" />
     <Compile Include="AsyncApiUnitTests.cs" />
     <Compile Include="SetTimeOutUnitTests.cs" />

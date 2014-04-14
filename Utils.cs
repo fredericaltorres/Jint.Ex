@@ -105,17 +105,21 @@ namespace Jint.Ex
             return r;
         }
 
-
-#if !__IOS__
-        public static Jint.Native.Object.ObjectInstance MakeObjectInstance(System.Dynamic.ExpandoObject expandoO, Jint.Engine engine)
-        {
-            var dic = expandoO as IDictionary<string, object>;
+        public static Jint.Native.Object.ObjectInstance MakeObjectInstance(IDictionary<string, object> dic, Jint.Engine engine)
+        {        
             var o = new Jint.Native.Object.ObjectInstance(engine);
             foreach (var i in dic)
             {
                 o.FastAddProperty(i.Key, MakeJsValue(i.Value, engine), true, true, true);
             }
             return o;
+        }
+
+#if !__IOS__
+        public static Jint.Native.Object.ObjectInstance MakeObjectInstance(System.Dynamic.ExpandoObject expandoO, Jint.Engine engine)
+        {
+            var dic = expandoO as IDictionary<string, object>;
+            return MakeObjectInstance(dic, engine);
         }
 #endif
 

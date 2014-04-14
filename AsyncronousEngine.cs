@@ -156,7 +156,9 @@ namespace Jint.Ex
 
             while (this._runBackgroundThread)
             {
-                Debug.WriteLine(string.Format("_runBackgroundThread:{0} Queue:{1}", Environment.TickCount, _eventQueue.Count));
+                #if !__IOS__ // In debug mode this slow down the iPhone simulator to much
+                    Debug.Write	()Line(string.Format("_runBackgroundThread:{0} Queue:{1}", Environment.TickCount, _eventQueue.Count));
+                #endif
                 if (_eventQueue.Count > 0)
                 {
                     // Execute first all events with no delay

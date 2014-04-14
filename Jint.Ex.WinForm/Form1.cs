@@ -10,6 +10,7 @@ namespace Jint.Ex.WinForm
     public partial class Form1 : Form
     {
         private AsyncronousEngine _asyncronousEngine;
+
         public Form1()
         {
             InitializeComponent();
@@ -17,25 +18,30 @@ namespace Jint.Ex.WinForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            _asyncronousEngine = new AsyncronousEngine();
-            _asyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
-            // Expose to the JavaScript the function setUserMessage which add a string 
-            // in the Listbox
-            _asyncronousEngine.Engine.SetValue("setUserMessage", new Action<string>(__setUserMessage__));
+            this.InitializeAsyncronousEngine();
         }
 
-        private void __setUserMessage__(string s)
+        private void InitializeAsyncronousEngine()
+        {
+            _asyncronousEngine = new AsyncronousEngine();
+            _asyncronousEngine.EmbedScriptAssemblies.Add(Assembly.GetExecutingAssembly());
+            // Expose to the JavaScript world the function setUserMessage which add a a message to the UI
+            _asyncronousEngine.Engine.SetValue("setUserMessage", new Action<string, bool>(__setUserMessage__));
+        }
+
+        private void __setUserMessage__(string s, bool replace)
         {
             try
             {
-                // When the method is called by the JavaScript engine it will be called from
-                // different thread
+                // When the method is called by the JavaScript engine it will be called from different thread
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(new Action<string>(__setUserMessage__), s);
+                    this.Invoke(new Action<string, bool>(__setUserMessage__), s, replace);
                 }
                 else
                 {
+                    if(replace)
+                        this.lbOut.Items.Clear();
                     this.lbOut.Items.Add(s);
                     this.lbOut.SelectedIndex = this.lbOut.Items.Count - 1;
                 }

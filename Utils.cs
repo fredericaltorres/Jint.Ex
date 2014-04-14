@@ -106,6 +106,7 @@ namespace Jint.Ex
         }
 
 
+#if !__IOS__
         public static Jint.Native.Object.ObjectInstance MakeObjectInstance(System.Dynamic.ExpandoObject expandoO, Jint.Engine engine)
         {
             var dic = expandoO as IDictionary<string, object>;
@@ -116,6 +117,7 @@ namespace Jint.Ex
             }
             return o;
         }
+#endif
 
         public static JsValue MakeJsValue(object o, Jint.Engine engine)
         {

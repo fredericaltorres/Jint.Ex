@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h1>Test setInterval</h1>
+</body>
+
+<script>
+    
+function $ERROR(s) {alert("ERROR:"+s);}
+function $FAIL(s) {alert("FAIL:"+s);}
+function print(s) {console.log(s)}
+
+function f2() {
+    print('Hi2');
+}
+setInterval(f2, 3000);
+
+function f1() {
+    print('Hi1');
+}
+setInterval(f1, 1000);
+    
+</script>
+
+</html>

@@ -1,6 +1,5 @@
 ﻿function addUserMessage() {
 
-    setUserMessage("string async " + (new Date()));
+    setUserMessage("" + (new Date()).toLocaleTimeString(), true);
 }
-
 setInterval(addUserMessage, 1000);

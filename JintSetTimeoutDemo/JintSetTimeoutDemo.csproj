@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{33147445-811D-4C3C-8EB1-1A7E40E74810}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{6D5956DC-3C2E-4C41-9964-7A5CABE1DA79}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jint.Ex.WinForm</RootNamespace>
-    <AssemblyName>Jint.Ex.WinForm</AssemblyName>
+    <RootNamespace>UnderscoreUnitTestsRunner</RootNamespace>
+    <AssemblyName>UnderscoreUnitTestsRunner</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -38,66 +38,37 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
+    <EmbeddedResource Include="Scripts\setTimeout.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\SynchronousExecution.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Scripts\AsynchronousExecution.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Scripts\Timer.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Scripts\MultipleTimers.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Jint\Jint.csproj">
+    <ProjectReference Include="..\..\Jint\Jint.csproj">
       <Project>{678738da-f723-4920-b9e5-cad667104bda}</Project>
       <Name>Jint</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Jint.Ex.Win.csproj">
+    <ProjectReference Include="..\Jint.Ex\Jint.Ex.Win.csproj">
       <Project>{1e1be100-50df-4ef2-8771-ec67b0548cde}</Project>
       <Name>Jint.Ex.Win</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BrowserTest\setInterval.html" />
+    <Content Include="BrowserTest\setTimeOut.html" />
+    <Content Include="Readme.html">
+      <DependentUpon>README.md</DependentUpon>
+    </Content>
+    <EmbeddedResource Include="Scripts\setIntervalSetTimeoutNested.js" />
+    <EmbeddedResource Include="Scripts\setIntervalSetTimeout.js" />
+    <EmbeddedResource Include="Scripts\setInterval.2.js" />
+    <EmbeddedResource Include="Scripts\setInterval.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

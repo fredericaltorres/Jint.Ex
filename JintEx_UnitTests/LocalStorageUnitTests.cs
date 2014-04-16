@@ -14,13 +14,32 @@ namespace JintEx_UnitTests
         
         private const string XXXX__Set_Get_Remove_Exists_Clear = @"
 
+            var getType = function(v) {
+
+                var type;
+                if (v === null)
+                    return 'null';
+                if (typeof v === 'undefined')
+                    return 'undefined';
+                if (typeof v === 'undefined')
+                    return 'undefined';
+
+                type = Object.prototype.toString.call(v);
+                type = type.replace('[object ', '');
+                type = type.replace(']', '');
+                return type;
+            }
+            var isDate = function(v) { 
+                return getType(v) === 'Date'; 
+            }
+
             localStorage.setItem('bar1', v1);
             localStorage.setItem('bar2', v2);
             if(!localStorage.existItem('bar1')) return 1;
             if(!localStorage.existItem('bar2')) return 2;
             if(localStorage.existItem('bar3')) return 3;
         
-            if(sys.isDate(v1)) {
+            if(isDate(v1)) {
                 if(localStorage.getItem('bar1').valueOf() !== v1.valueOf()) return 4;
                 if(localStorage.getItem('bar2').valueOf() !== v2.valueOf()) return 5;
             }
@@ -30,14 +49,14 @@ namespace JintEx_UnitTests
             }
         
             localStorage.clear();
-            if(localStorage.getCount() != 0) return 8;
-            if(localStorage.getCount() !== 0) return 9;
+            if(localStorage.Count != 0) return 8;
+            if(localStorage.Count !== 0) return 9;
         
             localStorage.setItem('bar1', v1);
             localStorage.setItem('bar2', v2);
-            if(localStorage.getCount() !== 2) return 10;
+            if(localStorage.Count !== 2) return 10;
 
-           if(sys.isDate(v1)) {
+           if(isDate(v1)) {
                 if(localStorage.getItem('bar1').valueOf() !== v1.valueOf()) return 11;
                 if(localStorage.getItem('bar2').valueOf() !== v2.valueOf()) return 12;
             }
@@ -48,7 +67,7 @@ namespace JintEx_UnitTests
         
             localStorage.removeItem('bar1');
             localStorage.removeItem('bar2');
-            if(localStorage.getCount() !== 0) return 15;
+            if(localStorage.Count !== 0) return 15;
            
             return true;
 ";
@@ -181,6 +200,19 @@ test();
             ";
             var v = this.ExecuteTest(source);
             Assert.AreEqual(@"[""a1"",""a2""]", v);
+        }
+
+
+        //[TestMethod]
+        public void Indexers()
+        {
+            var source = @"
+                localStorage.clear();
+                localStorage.setItem('a1', 1);
+                return localStorage['a1'];
+            ";
+            var v = this.ExecuteTest(source);
+            Assert.AreEqual(1.0, v);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Jint.Ex
         /// <returns></returns>
         private  Engine AllocateNewJintInstance()
         {
-            var e = new Engine();
+            var e = new Engine(c => c.AllowClr());
             
             e.SetValue("setTimeout"   , new Func<Func<Jint.Native.JsValue, Jint.Native.JsValue[], Jint.Native.JsValue>, double, int>(__setTimeout__));
             e.SetValue("clearTimeout" , new Action<int>(__clearTimeout__));

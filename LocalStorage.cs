@@ -117,9 +117,14 @@ namespace Jint.Ex
                 this.Save();
         }
 
-        public int count
+        public int Count
         {
             get { return this._store.Count; }
+        }
+
+        public int getCount()
+        {
+            return this.Count;
         }
         
         private void DeleteFile()
@@ -174,6 +179,11 @@ namespace Jint.Ex
         public List<object> GetKeys()
         {
             return this._store.Keys.Cast<object>().ToList();
+        }
+
+        public object this[string key]
+        {
+            get { return this.getItem(key); }
         }
 
         public object getItem(string key)

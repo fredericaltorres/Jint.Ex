@@ -195,7 +195,7 @@ namespace Jint.Ex
                 v = this._store[key].V;
                 if (a == KeyValuePairAttribute.Object)
                 {
-                    v = Jint.Ex.HelperClass.MakeObjectInstance(v as Dictionary<string, object>, _engine);
+                    v = Jint.Ex.HelperClass.MakeObjectInstance(v as IDictionary<string, object>, _engine);
                 }
             }
             else
@@ -220,7 +220,7 @@ namespace Jint.Ex
         public void setItem(string key, object value)
         {
             var a = KeyValuePairAttribute.Value;
-            if (value is Dictionary<string, object>)
+            if (value is IDictionary<string, object>)
                 a = KeyValuePairAttribute.Object;
 
             SetItem(key, value, a);

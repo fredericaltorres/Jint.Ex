@@ -203,7 +203,7 @@ test();
         }
 
 
-        //[TestMethod]
+        [TestMethod]
         public void Indexers()
         {
             var source = @"
@@ -211,8 +211,14 @@ test();
                 localStorage.setItem('a1', 1);
                 return localStorage['a1'];
             ";
-            var v = this.ExecuteTest(source);
-            Assert.AreEqual(1.0, v);
+            //var v = this.ExecuteTest(source);
+            //Assert.AreEqual(1.0, v);
+            source = @"              
+                localStorage.setItem('a1', 1);
+                localStorage['a1'];
+            ";
+            var v = this.Execute(source);
+            
         }
     }
 }

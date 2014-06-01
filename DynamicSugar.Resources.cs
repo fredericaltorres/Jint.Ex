@@ -6,8 +6,7 @@ using System.IO;
 using System.Collections;
 using System.Reflection;
 
-
-namespace DynamicSugar {
+namespace DynamicSugarDup {
 
     /// <summary>
     /// Dynamic Sharp Helper Class, dedicated methods to work with text resource file

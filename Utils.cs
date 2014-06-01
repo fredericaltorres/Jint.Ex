@@ -37,12 +37,22 @@ namespace Jint.Ex
             throw new ArgumentException(string.Format("Cannot deal with JsValue {0}", l));
         }
 
-        public static object AsListOfObjects(this Jint.Native.Array.ArrayInstance a)
+        public static List<object> AsListOfObjects(this Jint.Native.Array.ArrayInstance a)
         {
             var values = new List<object>();
             for (var i = 0; i < a.GetLength(); i++)
             {
                 values.Add(a.GetItem(i));
+            }
+            return values;
+        }
+
+        public static List<string> AsListOfString(this Jint.Native.Array.ArrayInstance a)
+        {
+            var values = new List<string>();
+            for (var i = 0; i < a.GetLength(); i++)
+            {
+                values.Add(a.Get(i.ToString()).AsString());
             }
             return values;
         }

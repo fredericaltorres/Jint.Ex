@@ -188,6 +188,7 @@ test();
             Assert.AreEqual(expected.Replace("'", @""""), v);
         }
 
+
         [TestMethod]
         public void GetKeys()
         {
@@ -211,13 +212,14 @@ test();
                 localStorage.setItem('a1', 1);
                 return localStorage['a1'];
             ";
-            //var v = this.ExecuteTest(source);
-            //Assert.AreEqual(1.0, v);
+            var v = this.ExecuteTest(source);
+            Assert.AreEqual(1.0, v);
+            /*
             source = @"              
                 localStorage.setItem('a1', 1);
                 localStorage['a1'];
             ";
-            var v = this.Execute(source);
+            var v = this.Execute(source);*/
             
         }
     }

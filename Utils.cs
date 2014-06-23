@@ -133,6 +133,14 @@ namespace Jint.Ex
         }
 #endif
 
+        public static List<JsValue> MakeJsValues(List<object> os, Jint.Engine engine) 
+        {
+            var l = new List<JsValue>();
+            foreach(var o in os)
+                l.Add(MakeJsValue(o, engine));
+            return l;
+        }
+
         public static JsValue MakeJsValue(object o, Jint.Engine engine)
         {
             var j = JsValue.FromObject(engine, o);

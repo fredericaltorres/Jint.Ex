@@ -128,10 +128,6 @@
       <Project>{678738da-f723-4920-b9e5-cad667104bda}</Project>
       <Name>Jint</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Jint.Ex.iOS.csproj">
-      <Project>{d4f266cc-b918-4d21-b6fe-89aa2a3c2ed6}</Project>
-      <Name>Jint.Ex.iOS</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default%402x.png" />

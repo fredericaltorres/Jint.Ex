@@ -22,5 +22,14 @@
 	<string>1.0</string>
 	<key>NSMainNibFile</key>
 	<string></string>
+	<key>CFBundleShortVersionString</key>
+	<string></string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>Icon@2x.png</string>
+		<string>Icon.png</string>
+		<string>Icon-Small@2x.png</string>
+		<string>Icon-Small.png</string>
+	</array>
 </dict>
 </plist>

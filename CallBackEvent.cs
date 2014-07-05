@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Threading;
 //1using System.Timers;
-using DynamicSugarDup;
+using DynamicSugar;
 using Jint;
 using System;
 using System.Collections;

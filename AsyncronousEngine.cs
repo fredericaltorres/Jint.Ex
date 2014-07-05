@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Threading;
 //1using System.Timers;
-using DynamicSugarDup;
+using DynamicSugar;
 using Jint;
 using System;
 using System.Collections.Generic;
@@ -85,7 +85,10 @@ namespace Jint.Ex
             if (System.IO.File.Exists(name))
                 source.Append(System.IO.File.ReadAllText(name)).AppendLine();
             else
-                source.Append(DS.Resources.GetTextResource(name, EmbedScriptAssemblies)).AppendLine();
+            {
+                var text = DS.Resources.GetTextResource(name, this.EmbedScriptAssemblies);
+                source.Append(text).AppendLine();
+            }
         }
         /// <summary>
         /// Load a file from the file system or as an embed resource

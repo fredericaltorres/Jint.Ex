@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="LocalStorageUnitTests.cs" />
     <Compile Include="DynamicConfigUnitTests.cs" />
+    <Compile Include="PassParameterUnitTests.cs" />
     <Compile Include="SyncApiUnitTests.cs" />
     <Compile Include="AsyncApiUnitTests.cs" />
     <Compile Include="SetTimeOutUnitTests.cs" />
@@ -104,6 +105,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\Config.3.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\PassObject.js" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
